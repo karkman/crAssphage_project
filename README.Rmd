@@ -1,0 +1,19 @@
+---
+output: github_document
+---
+
+# crAssphage project
+
+_Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments_
+
+The source code for all the analyses in the above paper can be found from here.
+
+## Bioinformatics
+```{bash, eval=FALSE}
+bowtie2-build 
+```
+
+## Data analysis and statistics in R
+```{r, message=FALSE}
+library(tidyverse)
+```
