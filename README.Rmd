@@ -12,7 +12,7 @@ bibliography: crAssphage.bib
 
 
 # Background
-_Supplementary data analysis for the paper:_  
+Supplementary data analysis for the paper:  
 _**Karkman, A., Pärnänen, K., Larsson, DGJ.** 2018._
 _Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments._
 
