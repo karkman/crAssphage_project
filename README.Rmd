@@ -13,9 +13,11 @@ bibliography: crAssphage.bib
 
 # Background
 Supplementary data analysis for the paper:  
+
 _**Karkman, A., Pärnänen, K., Larsson, DGJ.** 2018._
 _Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments._
 
+## Introduction
 Discharge of treated sewage introduces antibiotic resistance genes (ARGs) and resistant bacteria (ARBs) to the environment [@karkman_antibiotic-resistance_2018]. It has been speculated that the resistance determinants could be selected and/or disseminated to other bacteria in the downstream environments due to the antibiotcs and other selective agents released in the effluents [@rizzo_urban_2013; @guo_metagenomic_2017]. However, the increased abundance of ARGs in downstream environments could as well be explained by the amount of fecal pollution without any large scale selection and/or dissemination of the genes.  
 
 Recently a human feacal phage, crAssphage, was discovered from human fecal metagenomes [@dutilh_highly_2014] and was shown to infect _Bacteroides intestinalis_ [@shkoporov_crass001_2018]. It has been shown to be very abundant in human fecal material and mostly specific to humans [@garcia-aljaro_determination_2017]. Due to these facts, it has already been used as fecal marker in various studies [@stachler_correlation_2018;@ahmed_precipitation_2018;@stachler_metagenomic_2014;@stachler_quantitative_2017;@ahmed_evaluation_2018]. Another fecal Bacteroides phage, ɸB124-14, has also been used for microbial source tracking. Unlike crAssphage, it should be abundant in porcine and bovine guts as well [@ogilvie_resolution_2017]. However, we did not find it to perform as well as crAssphage and it won't be included in the analyses. 

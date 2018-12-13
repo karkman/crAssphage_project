@@ -2,6 +2,7 @@ crAssphage project
 ================
 
 -   [Background](#background)
+    -   [Introduction](#introduction)
 -   [Bioinformatics](#bioinformatics)
     -   [Phage genomes and Bowtie index](#phage-genomes-and-bowtie-index)
     -   [Mapping reads against phage genomes and calculating genome coverage](#mapping-reads-against-phage-genomes-and-calculating-genome-coverage)
@@ -17,7 +18,11 @@ Background
 ==========
 
 Supplementary data analysis for the paper:
+
 ***Karkman, A., Pärnänen, K., Larsson, DGJ.** 2018.* *Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments.*
+
+Introduction
+------------
 
 Discharge of treated sewage introduces antibiotic resistance genes (ARGs) and resistant bacteria (ARBs) to the environment (Karkman et al. 2018). It has been speculated that the resistance determinants could be selected and/or disseminated to other bacteria in the downstream environments due to the antibiotcs and other selective agents released in the effluents (Rizzo et al. 2013; Guo et al. 2017). However, the increased abundance of ARGs in downstream environments could as well be explained by the amount of fecal pollution without any large scale selection and/or dissemination of the genes.
 
