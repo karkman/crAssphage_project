@@ -19,7 +19,7 @@ Background
 
 Supplementary data analysis for the paper:
 
-***Karkman, A., Pärnänen, K., Larsson, DGJ.** 2018.* *Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments.*
+***Karkman, A., Pärnänen, K., Larsson, DGJ.*** 2018. Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments. *Nature Communications* X: XYZ. <https://doi.org/XYZ>.
 
 Introduction
 ------------
