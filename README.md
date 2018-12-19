@@ -9,9 +9,10 @@ crAssphage project
     -   [ARG and MGE abundance](#arg-and-mge-abundance)
 -   [Data analysis and statistics in R](#data-analysis-and-statistics-in-r)
     -   [Load in the data and libraries needed in the analyses](#load-in-the-data-and-libraries-needed-in-the-analyses)
-    -   [Figure 1 - crAssphage in human fecal metagenomes](#figure-1---crassphage-in-human-fecal-metagenomes)
-    -   [Figure 2 - crAssphage in impacted environments](#figure-2---crassphage-in-impacted-environments)
-    -   [Figure 3 - crAsspahge in MG-RAST metagenomes](#figure-3---crasspahge-in-mg-rast-metagenomes)
+    -   [Figure 1 -crAssphage and ARG dynamics in human feacal metagenomes](#figure-1--crassphage-and-arg-dynamics-in-human-feacal-metagenomes)
+    -   [Figure 2 - Industrially polluted sediment is a hotspot for ARG selection](#figure-2---industrially-polluted-sediment-is-a-hotspot-for-arg-selection)
+    -   [Figure 3 - ARG abundance is largely explained by fecal matter, not selection](#figure-3---arg-abundance-is-largely-explained-by-fecal-matter-not-selection)
+    -   [Figure 4 - Antibiotic resistance gene dynamics in waste water treatment plants](#figure-4---antibiotic-resistance-gene-dynamics-in-waste-water-treatment-plants)
 -   [References](#references)
 
 **The document is still under construction...**
@@ -21,7 +22,7 @@ Background
 
 Supplementary data analysis for the paper:
 
-***Karkman, A., Pärnänen, K., Larsson, DGJ.*** 2018. Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments. *Nature Communications* X: XYZ. <https://doi.org/XYZ>.
+***Karkman, A., Pärnänen, K., Larsson, DGJ.*** 2018. Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments. *Nature Communications* X: XYZ. DOI: [10.1038/s41467-018-07992-3](https://doi.org/10.1038/s41467-018-07992-3)
 
 Introduction
 ------------
@@ -32,10 +33,12 @@ Recently a human feacal phage, crAssphage, was discovered from human fecal metag
 
 In this study we show that in most of the the studied environments the abundance of ARGs, *intI1* integrase gene and mobile genetic elements correlates well with fecal pollution levels with no evident signs of selection or dissemination of the resistance genes. The only exception being sediments polluted with wastewater from drug manufacturing containing exceptionally high levels of antibiotics (Bengtsson-Palme et al. 2014; Kristiansson et al. 2011).
 
+**This supplementary data analysis file is meant to document the analyses. For more detailed information about the background, methods, results and conclusions we of course recommend the original article.**
+
 Bioinformatics
 ==============
 
-The bioinformartics part shows only example commands and is not meant to be run as such. The results from the bioinformatics paret are available in the `data` folder and will be used in the datraanalysis part with R.
+The bioinformartics part shows only example commands and is not meant to be run as such. The results from the bioinformatics part are available in the `data` folder and will be used in the data analysis part with R.
 
 All metagenomic samples were downloaded from public repositories as described in the methods.
 
@@ -53,54 +56,54 @@ bowtie2-build phage_genome.fasta phage_genome
 Mapping reads against phage genomes and calculating genome coverage
 -------------------------------------------------------------------
 
-After indexing the phage genomes each sample was mapped against the genomes. The average genome coverage was calculated and used as a proxy for phage abundance.
+After indexing the phage genomes each sample was mapped against the genomes. The average genome coverage was used as a proxy for phage abundance.
 **Paired-end reads:**
 
 ``` bash
-bowtie2 -x phage_genome -1 Sample_R1_reads.fastq.gz -2 Sample_R2_reads.fastq.gz -S Sample.sam
-samtools view -Sb -f 2 Sample.sam > Sample.bam
-samtools sort Sample.bam -o Sample_sort.bam
-samtools index Sample_sort.bam
-export GEN_COV=$(samtools depth -a Sample_sort.bam |\
+bowtie2 -x phage_genome -1 SampleX_R1_reads.fastq.gz -2 SampleX_R2_reads.fastq.gz -S SampleX.sam
+samtools view -Sb -f 2 SampleX.sam > SampleX.bam
+samtools sort SampleX.bam -o SampleX_sort.bam
+samtools index SampleX_sort.bam
+export GEN_COV=$(samtools depth -a SampleX_sort.bam |\
                   awk '{ sum += $3; n++ } END { if (n > 0) print sum / n; }')
-echo 'Sample\t'$GEN_COV
+echo 'SampleX\t'$GEN_COV
 ```
 
 **Single reads:**
 
 ``` bash
-bowtie2 -x phage_genome -U Sample.fastq -S Sample.sam
-samtools view -Sb -q 10 Sample.sam > Sample.bam
-samtools sort  Sample.bam -o  Sample_sort.bam
-samtools index Sample_sort.bam
-export GEN_COV=$(samtools depth -a Sample_sort.bam |\
+bowtie2 -x phage_genome -U SampleY.fastq -S SampleY.sam
+samtools view -Sb -q 10 SampleY.sam > SampleY.bam
+samtools sort  SampleY.bam -o  SampleY_sort.bam
+samtools index SampleY_sort.bam
+export GEN_COV=$(samtools depth -a SampleY_sort.bam |\
                   awk '{ sum += $3; n++ } END { if (n > 0) print sum / n; }')
-echo 'Sample\t'$GEN_COV 
+echo 'SampleY\t'$GEN_COV 
 ```
 
 ARG and MGE abundance
 ---------------------
 
-The `fastq` files were converted to `fasta` and the sample name was added to each sequence header before concatenating all fasta files to one file for annotation with DIAMOND.
+The `fastq` files were converted to `fasta`. The sample name was added to each sequence header before concatenating all fasta files to one file for annotation with DIAMOND against the [ARG](https://bitbucket.org/genomicepidemiology/resfinder_db) and [MGE](https://github.com/KatariinaParnanen/MobileGeneticElementDatabase) databases.
 
-The count tables are generated from the DIAMOND outputs using custom scripts. The scripts for single (`parse_diamond.py`) and paired-end reads (`parse_diamondPE.py`) can be downloaded from [here](https://github.com/karkman/parse_diamond).
+The count tables are generated from the DIAMOND outputs using custom scripts. The scripts for single (`parse_diamond.py`) and paired-end reads (`parse_diamondPE.py`) can be downloaded from my other [Github repository](https://github.com/karkman/parse_diamond).
 
 **Paired-end reads:**
 
 ``` bash
-diamond blastx -d ResFinder -q Sample_R1.fasta --max-target-seqs 1 -o Sample_R1_res.txt \
+diamond blastx -d ResFinder -q SampleX_R1.fasta --max-target-seqs 1 -o SampleX_R1_res.txt \
                 -f 6 --id 90 --min-orf 20 -p 24 --masking 0
-diamond blastx -d ResFinder -q Sample_R2.fasta --max-target-seqs 1 -o Sample_R2_res.txt \
+diamond blastx -d ResFinder -q SampleX_R2.fasta --max-target-seqs 1 -o SampleX_R2_res.txt \
                 -f 6 --id 90 --min-orf 20 -p 24 --masking 0
-python parse_diamondPE.py -1 Sample_R1_res.txt -2 Sample_R2_res.txt -o Sample_ResFinder.csv
+python parse_diamondPE.py -1 SampleX_R1_res.txt -2 SampleX_R2_res.txt -o SampleX_ResFinder.csv
 ```
 
 **Single reads:**
 
 ``` bash
-diamond blastx -d ResFinder -q Sample.fasta --max-target-seqs 1 -o Sample_res.txt \
+diamond blastx -d ResFinder -q SampleY.fasta --max-target-seqs 1 -o SampleY_res.txt \
                 -f 6 --id 90 --min-orf 20 -p 24 --masking 0
-python parse_diamondPE.py -i Sample_res.txt -o Sample_ResFinder.csv
+python parse_diamondPE.py -i SampleY_res.txt -o SampleY_ResFinder.csv
 ```
 
 To bp count in each metagenome was used for normalization.
@@ -108,31 +111,36 @@ To bp count in each metagenome was used for normalization.
 Data analysis and statistics in R
 =================================
 
-The results from mapping against crAssphage and gene annotations were imported to R.
+The results from mapping against crAssphage and the gene annotations were imported to R and combined in data frames. Resulting data frames for each part of te study can be found from the `data`folder.
 
 Load in the data and libraries needed in the analyses
 -----------------------------------------------------
 
-All the data can be found from the `data` folder.
+Both `tidyverse` and `vegan` packageds are needed for the analyses. In here the results are read to R and the colors used in the figures are defined.
 
 ``` r
 library(tidyverse)
+library(vegan)
+
+cols <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
 HMP <- read.table("data/")
-crass_imapct <- read.table("data/")
-crass_wwtp <- read.table("data/")
-crass_MG_RAST <- read.table("data/")
-res_risk <- read.table("data/")
+crass_imapct <- read_table("data/")
+crass_wwtp <- read_table("data/")
+crass_MG_RAST <- read_table("data/")
+res_risk <- read_table("data/")
 ```
 
-Figure 1 - crAssphage in human fecal metagenomes
-------------------------------------------------
+Figure 1 -crAssphage and ARG dynamics in human feacal metagenomes
+-----------------------------------------------------------------
 
-text here
+The first figure shows the correlation between crAssphage and ARGs and *intI1* integrase gene in human fecal metagenomes in different populations.
 
 ``` r
 par(fig=c(0,0.45,0,0.8), new=TRUE)
 plot(log10(rel_res)~log10(rel_crAss), data=HMP, bg=cols[as.factor(HMP$country)], pch=21,
-      ylab = "Normalized ARG abundance (log10)", xlab="Normalized crAssphage abundance (log10)", cex=2, ylim=c(2.5, 4.5))
+     ylab = "Normalized ARG abundance (log10)", 
+     xlab="Normalized crAssphage abundance (log10)", cex=2, ylim=c(2.5, 4.5))
 par(fig=c(0,0.45,0.5,1), new=TRUE)
 boxplot(log10(rel_crAss)~country, data=HMP, horizontal=TRUE, col=cols, axes=F)
 axis(2, at=1:3, labels=c("China", "Europe", "US"), las=1)
@@ -152,25 +160,73 @@ boxplot(log10(rel_res)~country, data=HMP, col=cols, axes=F)
 axis(1, at=1:3, labels=c("China", "Europe", "US"), las=3)
 ```
 
-Figure 2 - crAssphage in impacted environments
-----------------------------------------------
+**Figure 1.** Abundance of antibiotic resistance genes, intI1 gene and crAssphage in human fecal metagenomes.
 
-text here
+Figure 2 - Industrially polluted sediment is a hotspot for ARG selection
+------------------------------------------------------------------------
 
-``` r
-ggplot(crass_impact, aes(x=rel_crAss, y=rel_res, color=country)) +  geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() + theme_classic() +
-            labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", color="Study", shape="crAssphage detection") + scale_colour_manual(values=cols)
-```
-
-Figure 3 - crAsspahge in MG-RAST metagenomes
---------------------------------------------
-
-text here.
+Figure 2 shows the correlation between crAssphage and ARGs in impacted environments. The only environenmt where selection possibly is happening are the heavily polluted Indian sediments having therapeutic concemntrations of antibioitcs.
 
 ``` r
-ggplot(MG_RAST_crass, aes(x=rel_crAss, y=rel_res, color=revised_source)) + geom_point(size=5) + scale_x_log10() + scale_y_log10() + geom_smooth(method="lm") + theme_classic() +
-      labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", color = "Revised source") + scale_colour_manual(values=cols)
+ggplot(crass_impact, aes(x=rel_crAss, y=rel_res, color=country)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() +
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
+       color="Study", shape="crAssphage detection") + scale_colour_manual(values=cols)
 ```
+
+**Figure 2.** Correlation between ARG abundance and crAssphage abundance in environments with 642 pollution from WWTPs, hospitals or drug manufacturing.
+
+Figure 3 - ARG abundance is largely explained by fecal matter, not selection
+----------------------------------------------------------------------------
+
+In figure 3 the link between fecal pollution and ARG abundance was studied in MG-RAST metagenomes. Only part of the metagenomes were from human impacted environemnts, so all samples where crAssphage was not detected can be removed. Also samples that were the only representative from the environemnt where they came where removed.
+The annotations in the resulting samples were manually curated ands revised.
+
+``` r
+MG_RAST_crass <- subset(MG_RAST, crAss!="NA")
+MG_RAST_crass <- tmp[tmp$feature %in% levels(tmp$feature)[table(tmp$feature)>2],]
+
+MG_RAST_crass$revised_source <- "WWTP"
+MG_RAST_crass[MG_RAST_crass$project_id=="mgp9679",]$revised_source <- "High ammonia AS"
+MG_RAST_crass[MG_RAST_crass$project_id=="mgp9798",]$revised_source <- "High ammonia AS"
+MG_RAST_crass[MG_RAST_crass$project_id=="mgp6153",]$revised_source <- "Mouse gut"
+MG_RAST_crass[MG_RAST_crass$project_id=="mgp6698",]$revised_source <- "Mouse gut"
+MG_RAST_crass[MG_RAST_crass$project_id=="mgp3907",]$revised_source <- "Mouse gut"
+MG_RAST_crass[MG_RAST_crass$project_id=="mgp3190",]$revised_source <- "River water"
+MG_RAST_crass[MG_RAST_crass$project_id=="mgp3756",]$revised_source <- "Beijing air"
+
+ggplot(MG_RAST_crass, aes(x=rel_crAss, y=rel_res, color=revised_source)) + 
+  geom_point(size=5) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  geom_smooth(method="lm") + 
+  theme_classic() +
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
+       color = "Revised source") + scale_colour_manual(values=cols)
+```
+
+**Figure 3.** The correlation between crAssphage abundance and total ARG abundance in MG-RAST 651 metagenomes where crAssphage was detected.
+
+Figure 4 - Antibiotic resistance gene dynamics in waste water treatment plants
+------------------------------------------------------------------------------
+
+``` r
+ggplot(tmp, aes(rel_crAss, rel_res, color=country_wwtp)) + 
+  geom_smooth(method="lm") + 
+  geom_point(size=5) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() + 
+  scale_colour_manual(values=cols) + 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
+       color="Country:WWTP")
+```
+
+**Figure 4.** ARG and crAssphage abundance in two US and three Swedish waste water treatment 658 plants showing similar correlation with different base level of resistance.
 
 References
 ==========
