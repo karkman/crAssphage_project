@@ -4,8 +4,8 @@ output:
     github_document:
       toc: true
       toc_depth: 3
-      fig_height: 8
-      fig_width: 10
+      fig_height: 4
+      fig_width: 6
       dev: jpeg
 bibliography: crAssphage.bib
 ---
@@ -89,26 +89,28 @@ To bp count in each metagenome was used for normalization.
 The results from mapping against crAssphage and the gene annotations were imported to R and combined in data frames. Resulting data frames for each part of te study can be found from the `data`folder.  
 
 ## Load in the data and libraries needed in the analyses
-Both `tidyverse` and `vegan` packageds are needed for the analyses. In here the results are read to R and the colors used in the figures are defined.
-```{r, message=FALSE, eval=FALSE}
+Both `tidyverse` and `vegan` packageds are needed for the analyses (they can be installed with `install.packages()`).   
+In here the results are read to R and the colors used in the figures are defined.
+```{r, message=FALSE}
 library(tidyverse)
 library(vegan)
 
 cols <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-HMP <- read.table("data/")
-crass_imapct <- read_table("data/")
-crass_wwtp <- read_table("data/")
-crass_MG_RAST <- read_table("data/")
-res_risk <- read_table("data/")
+HMP <- read.table("data/HMP.txt")
+crass_impact <- read.table("data/crass_impact.txt")
+MG_RAST <- read.table("data/MG-RAST.txt")
+crass_wwtp <- read.table("data/crass_wwtp.txt")
+res_risk <- read.table("data/res_risk.txt")
 ```
-## Figure 1 -crAssphage and ARG dynamics in human feacal metagenomes 
+## Figure 1 - crAssphage and ARG dynamics in human feacal metagenomes 
 The first figure shows the correlation between crAssphage and ARGs and _intI1_ integrase gene in human fecal metagenomes in different populations. 
-```{r, eval=FALSE}
+```{r, warning=FALSE, fig.height=6, fig.width=12}
 par(fig=c(0,0.45,0,0.8), new=TRUE)
 plot(log10(rel_res)~log10(rel_crAss), data=HMP, bg=cols[as.factor(HMP$country)], pch=21,
      ylab = "Normalized ARG abundance (log10)", 
      xlab="Normalized crAssphage abundance (log10)", cex=2, ylim=c(2.5, 4.5))
+
 par(fig=c(0,0.45,0.5,1), new=TRUE)
 boxplot(log10(rel_crAss)~country, data=HMP, horizontal=TRUE, col=cols, axes=F)
 axis(2, at=1:3, labels=c("China", "Europe", "US"), las=1)
@@ -118,6 +120,7 @@ par(fig=c(0.45,0.9,0,0.8), new=TRUE)
 tmp <- subset(HMP, rel_int>0)
 plot(log10(rel_res)~log10(rel_int), data=tmp, bg=cols[as.factor(tmp$country)], pch=21,
       ylab = "", xlab="Normalized intI1 abundance (log10)", cex=2, ylim=c(2.5, 4.5))
+
 par(fig=c(0.45,0.9,0.5,1), new=TRUE)
 boxplot(log10(rel_int)~country, data=tmp, horizontal=TRUE, col=cols, axes=F)
 axis(2, at=1:3, labels=c("China", "Europe", "US"), las=1)
@@ -127,11 +130,23 @@ par(fig=c(0.8,1,0,0.8),new=TRUE)
 boxplot(log10(rel_res)~country, data=HMP, col=cols, axes=F)
 axis(1, at=1:3, labels=c("China", "Europe", "US"), las=3)
 ```
+
 **Figure 1.** Abundance of antibiotic resistance genes, intI1 gene and crAssphage in human fecal metagenomes.
+
+some text...
+```{r}
+# STATISTICS FOR FIG. 1 here
+crass_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=HMP)
+summary(crass_mod)
+
+int_mod <- lm(log10(rel_res)~country+log10(rel_int), data=HMP)
+summary(int_mod)
+```
+
 
 ## Figure 2 - Industrially polluted sediment is a hotspot for ARG selection 
 Figure 2 shows the correlation between crAssphage and ARGs in impacted environments. The only environenmt where selection possibly is happening are the heavily polluted Indian sediments having therapeutic concemntrations of antibioitcs. 
-```{r, eval=FALSE}
+```{r}
 ggplot(crass_impact, aes(x=rel_crAss, y=rel_res, color=country)) + 
   geom_smooth(method="lm") + 
   geom_point(aes(shape=crAss_detection), size=5) + 
@@ -141,15 +156,24 @@ ggplot(crass_impact, aes(x=rel_crAss, y=rel_res, color=country)) +
   labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
        color="Study", shape="crAssphage detection") + scale_colour_manual(values=cols)
 ```
+
 **Figure 2.** Correlation between ARG abundance and crAssphage abundance in environments with
 642 pollution from WWTPs, hospitals or drug manufacturing.
+
+some text...
+```{r}
+# Statistics for figure 2 here
+impact_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=crass_impact)
+summary(impact_mod)
+```
 
 ## Figure 3 - ARG abundance is largely explained by fecal matter, not selection 
 In figure 3 the link between fecal pollution and ARG abundance was studied in MG-RAST metagenomes. Only part of the metagenomes were from human impacted environemnts, so all samples where crAssphage was not detected can be removed. Also samples that were the only representative from the environemnt where they came where removed.  
 The annotations in the resulting samples were manually curated ands revised.
-```{r, eval=FALSE}
+```{r}
 MG_RAST_crass <- subset(MG_RAST, crAss!="NA")
-MG_RAST_crass <- tmp[tmp$feature %in% levels(tmp$feature)[table(tmp$feature)>2],]
+MG_RAST_crass <- MG_RAST_crass[MG_RAST_crass$feature %in%
+                                 levels(MG_RAST_crass$feature)[table(MG_RAST_crass$feature)>2],]
 
 MG_RAST_crass$revised_source <- "WWTP"
 MG_RAST_crass[MG_RAST_crass$project_id=="mgp9679",]$revised_source <- "High ammonia AS"
@@ -169,12 +193,19 @@ ggplot(MG_RAST_crass, aes(x=rel_crAss, y=rel_res, color=revised_source)) +
   labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
        color = "Revised source") + scale_colour_manual(values=cols)
 ```
+
 **Figure 3.** The correlation between crAssphage abundance and total ARG abundance in MG-RAST
 651 metagenomes where crAssphage was detected.
 
+## Predicting antibiotic resistance gene abundance with crAssphage 
+some text here.
+```{r}
+# And the model here
+```
+
 ## Figure 4 - Antibiotic resistance gene dynamics in waste water treatment plants 
-```{r, eval=FALSE}
-ggplot(tmp, aes(rel_crAss, rel_res, color=country_wwtp)) + 
+```{r}
+ggplot(crass_wwtp, aes(rel_crAss, rel_res, color=country_wwtp)) + 
   geom_smooth(method="lm") + 
   geom_point(size=5) + 
   scale_x_log10() + 
@@ -184,7 +215,28 @@ ggplot(tmp, aes(rel_crAss, rel_res, color=country_wwtp)) +
   labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
        color="Country:WWTP")
 ```
+
 **Figure 4.** ARG and crAssphage abundance in two US and three Swedish waste water treatment
 658 plants showing similar correlation with different base level of resistance.  
+
+some text...
+```{r}
+# And the statistics for fig 4 here
+wwtp_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=crass_wwtp)
+summary(wwtp_mod)
+```
+
+## Estimated resistance risk correlates with fecal pollution 
+some text here...
+```{r}
+# and analyses here
+```
+
+## Supplementary figures
+some text...
+```{r}
+# and all the figures here
+```
+
 
 # References

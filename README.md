@@ -9,10 +9,13 @@ crAssphage project
     -   [ARG and MGE abundance](#arg-and-mge-abundance)
 -   [Data analysis and statistics in R](#data-analysis-and-statistics-in-r)
     -   [Load in the data and libraries needed in the analyses](#load-in-the-data-and-libraries-needed-in-the-analyses)
-    -   [Figure 1 -crAssphage and ARG dynamics in human feacal metagenomes](#figure-1--crassphage-and-arg-dynamics-in-human-feacal-metagenomes)
+    -   [Figure 1 - crAssphage and ARG dynamics in human feacal metagenomes](#figure-1---crassphage-and-arg-dynamics-in-human-feacal-metagenomes)
     -   [Figure 2 - Industrially polluted sediment is a hotspot for ARG selection](#figure-2---industrially-polluted-sediment-is-a-hotspot-for-arg-selection)
     -   [Figure 3 - ARG abundance is largely explained by fecal matter, not selection](#figure-3---arg-abundance-is-largely-explained-by-fecal-matter-not-selection)
+    -   [Predicting antibiotic resistance gene abundance with crAssphage](#predicting-antibiotic-resistance-gene-abundance-with-crassphage)
     -   [Figure 4 - Antibiotic resistance gene dynamics in waste water treatment plants](#figure-4---antibiotic-resistance-gene-dynamics-in-waste-water-treatment-plants)
+    -   [Estimated resistance risk correlates with fecal pollution](#estimated-resistance-risk-correlates-with-fecal-pollution)
+    -   [Supplementary figures](#supplementary-figures)
 -   [References](#references)
 
 **The document is still under construction...**
@@ -116,7 +119,8 @@ The results from mapping against crAssphage and the gene annotations were import
 Load in the data and libraries needed in the analyses
 -----------------------------------------------------
 
-Both `tidyverse` and `vegan` packageds are needed for the analyses. In here the results are read to R and the colors used in the figures are defined.
+Both `tidyverse` and `vegan` packageds are needed for the analyses (they can be installed with `install.packages()`).
+In here the results are read to R and the colors used in the figures are defined.
 
 ``` r
 library(tidyverse)
@@ -124,15 +128,15 @@ library(vegan)
 
 cols <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-HMP <- read.table("data/")
-crass_imapct <- read_table("data/")
-crass_wwtp <- read_table("data/")
-crass_MG_RAST <- read_table("data/")
-res_risk <- read_table("data/")
+HMP <- read.table("data/HMP.txt")
+crass_impact <- read.table("data/crass_impact.txt")
+MG_RAST <- read.table("data/MG-RAST.txt")
+crass_wwtp <- read.table("data/crass_wwtp.txt")
+res_risk <- read.table("data/res_risk.txt")
 ```
 
-Figure 1 -crAssphage and ARG dynamics in human feacal metagenomes
------------------------------------------------------------------
+Figure 1 - crAssphage and ARG dynamics in human feacal metagenomes
+------------------------------------------------------------------
 
 The first figure shows the correlation between crAssphage and ARGs and *intI1* integrase gene in human fecal metagenomes in different populations.
 
@@ -141,6 +145,7 @@ par(fig=c(0,0.45,0,0.8), new=TRUE)
 plot(log10(rel_res)~log10(rel_crAss), data=HMP, bg=cols[as.factor(HMP$country)], pch=21,
      ylab = "Normalized ARG abundance (log10)", 
      xlab="Normalized crAssphage abundance (log10)", cex=2, ylim=c(2.5, 4.5))
+
 par(fig=c(0,0.45,0.5,1), new=TRUE)
 boxplot(log10(rel_crAss)~country, data=HMP, horizontal=TRUE, col=cols, axes=F)
 axis(2, at=1:3, labels=c("China", "Europe", "US"), las=1)
@@ -150,6 +155,7 @@ par(fig=c(0.45,0.9,0,0.8), new=TRUE)
 tmp <- subset(HMP, rel_int>0)
 plot(log10(rel_res)~log10(rel_int), data=tmp, bg=cols[as.factor(tmp$country)], pch=21,
       ylab = "", xlab="Normalized intI1 abundance (log10)", cex=2, ylim=c(2.5, 4.5))
+
 par(fig=c(0.45,0.9,0.5,1), new=TRUE)
 boxplot(log10(rel_int)~country, data=tmp, horizontal=TRUE, col=cols, axes=F)
 axis(2, at=1:3, labels=c("China", "Europe", "US"), las=1)
@@ -160,7 +166,66 @@ boxplot(log10(rel_res)~country, data=HMP, col=cols, axes=F)
 axis(1, at=1:3, labels=c("China", "Europe", "US"), las=3)
 ```
 
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.jpeg)
+
 **Figure 1.** Abundance of antibiotic resistance genes, intI1 gene and crAssphage in human fecal metagenomes.
+
+some text...
+
+``` r
+# STATISTICS FOR FIG. 1 here
+crass_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=HMP)
+summary(crass_mod)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log10(rel_res) ~ country + log10(rel_crAss), data = HMP)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.82305 -0.13730  0.02065  0.15526  0.92042 
+    ## 
+    ## Coefficients:
+    ##                   Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)       3.832371   0.036734 104.328  < 2e-16 ***
+    ## countryEuropean  -0.331988   0.041913  -7.921 5.47e-14 ***
+    ## countryUS        -0.363815   0.044071  -8.255 5.91e-15 ***
+    ## log10(rel_crAss)  0.003295   0.007420   0.444    0.657    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.2447 on 282 degrees of freedom
+    ##   (163 observations deleted due to missingness)
+    ## Multiple R-squared:  0.2134, Adjusted R-squared:  0.2051 
+    ## F-statistic: 25.51 on 3 and 282 DF,  p-value: 1.25e-14
+
+``` r
+int_mod <- lm(log10(rel_res)~country+log10(rel_int), data=HMP)
+summary(int_mod)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log10(rel_res) ~ country + log10(rel_int), data = HMP)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -0.74900 -0.13778 -0.00554  0.12871  0.73835 
+    ## 
+    ## Coefficients:
+    ##                 Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)      3.78587    0.03091 122.496  < 2e-16 ***
+    ## countryEuropean -0.21379    0.04025  -5.311 4.15e-07 ***
+    ## countryUS       -0.27632    0.05666  -4.876 2.88e-06 ***
+    ## log10(rel_int)   0.06083    0.02896   2.100   0.0375 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.2148 on 141 degrees of freedom
+    ##   (304 observations deleted due to missingness)
+    ## Multiple R-squared:  0.3042, Adjusted R-squared:  0.2894 
+    ## F-statistic: 20.55 on 3 and 141 DF,  p-value: 4.174e-11
 
 Figure 2 - Industrially polluted sediment is a hotspot for ARG selection
 ------------------------------------------------------------------------
@@ -178,7 +243,41 @@ ggplot(crass_impact, aes(x=rel_crAss, y=rel_res, color=country)) +
        color="Study", shape="crAssphage detection") + scale_colour_manual(values=cols)
 ```
 
+![](README_files/figure-markdown_github/unnamed-chunk-9-1.jpeg)
+
 **Figure 2.** Correlation between ARG abundance and crAssphage abundance in environments with 642 pollution from WWTPs, hospitals or drug manufacturing.
+
+some text...
+
+``` r
+# Statistics for figure 2 here
+impact_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=crass_impact)
+summary(impact_mod)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log10(rel_res) ~ country + log10(rel_crAss), data = crass_impact)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.38795 -0.22124  0.02787  0.24639  1.15404 
+    ## 
+    ## Coefficients:
+    ##                       Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)            3.99570    0.21579  18.517  < 2e-16 ***
+    ## countryIndia polluted  2.38322    0.23584  10.105 2.10e-14 ***
+    ## countrySingapore      -0.93755    0.22206  -4.222 8.64e-05 ***
+    ## countrySpain          -0.76029    0.20643  -3.683 0.000508 ***
+    ## countryUK             -0.21895    0.23083  -0.949 0.346778    
+    ## countryUS             -1.41900    0.22595  -6.280 4.68e-08 ***
+    ## log10(rel_crAss)       0.57113    0.05509  10.368 8.01e-15 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.4702 on 58 degrees of freedom
+    ## Multiple R-squared:  0.8215, Adjusted R-squared:  0.803 
+    ## F-statistic: 44.48 on 6 and 58 DF,  p-value: < 2.2e-16
 
 Figure 3 - ARG abundance is largely explained by fecal matter, not selection
 ----------------------------------------------------------------------------
@@ -188,7 +287,8 @@ The annotations in the resulting samples were manually curated ands revised.
 
 ``` r
 MG_RAST_crass <- subset(MG_RAST, crAss!="NA")
-MG_RAST_crass <- tmp[tmp$feature %in% levels(tmp$feature)[table(tmp$feature)>2],]
+MG_RAST_crass <- MG_RAST_crass[MG_RAST_crass$feature %in%
+                                 levels(MG_RAST_crass$feature)[table(MG_RAST_crass$feature)>2],]
 
 MG_RAST_crass$revised_source <- "WWTP"
 MG_RAST_crass[MG_RAST_crass$project_id=="mgp9679",]$revised_source <- "High ammonia AS"
@@ -209,13 +309,24 @@ ggplot(MG_RAST_crass, aes(x=rel_crAss, y=rel_res, color=revised_source)) +
        color = "Revised source") + scale_colour_manual(values=cols)
 ```
 
+![](README_files/figure-markdown_github/unnamed-chunk-11-1.jpeg)
+
 **Figure 3.** The correlation between crAssphage abundance and total ARG abundance in MG-RAST 651 metagenomes where crAssphage was detected.
+
+Predicting antibiotic resistance gene abundance with crAssphage
+---------------------------------------------------------------
+
+some text here.
+
+``` r
+# And the model here
+```
 
 Figure 4 - Antibiotic resistance gene dynamics in waste water treatment plants
 ------------------------------------------------------------------------------
 
 ``` r
-ggplot(tmp, aes(rel_crAss, rel_res, color=country_wwtp)) + 
+ggplot(crass_wwtp, aes(rel_crAss, rel_res, color=country_wwtp)) + 
   geom_smooth(method="lm") + 
   geom_point(size=5) + 
   scale_x_log10() + 
@@ -226,7 +337,55 @@ ggplot(tmp, aes(rel_crAss, rel_res, color=country_wwtp)) +
        color="Country:WWTP")
 ```
 
+![](README_files/figure-markdown_github/unnamed-chunk-13-1.jpeg)
+
 **Figure 4.** ARG and crAssphage abundance in two US and three Swedish waste water treatment 658 plants showing similar correlation with different base level of resistance.
+
+some text...
+
+``` r
+# And the statistics for fig 4 here
+wwtp_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=crass_wwtp)
+summary(wwtp_mod)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = log10(rel_res) ~ country + log10(rel_crAss), data = crass_wwtp)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -0.9168 -0.1962  0.0885  0.2079  0.5715 
+    ## 
+    ## Coefficients:
+    ##                  Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)       3.25786    0.06297  51.739  < 2e-16 ***
+    ## countryUS        -0.49316    0.08295  -5.945 4.45e-08 ***
+    ## log10(rel_crAss)  0.70270    0.05939  11.832  < 2e-16 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.2979 on 96 degrees of freedom
+    ## Multiple R-squared:  0.5975, Adjusted R-squared:  0.5891 
+    ## F-statistic: 71.26 on 2 and 96 DF,  p-value: < 2.2e-16
+
+Estimated resistance risk correlates with fecal pollution
+---------------------------------------------------------
+
+some text here...
+
+``` r
+# and analyses here
+```
+
+Supplementary figures
+---------------------
+
+some text...
+
+``` r
+# and all the figures here
+```
 
 References
 ==========
