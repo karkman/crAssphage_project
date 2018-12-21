@@ -400,7 +400,7 @@ Estimated resistance risk correlates with fecal pollution
 ---------------------------------------------------------
 
 The resistance risk values were taken from the original publication (see main article) and ARG and crAssphage abundances were measured in this publication as described earlier.
-The results show that due to the one outlier (hospital effluent) with higher ARG abundance than would be estimated from the crAssphage abundance the regression is not significant. The regression model between the ARG abundance and resistance risk is significant revealing the main driver behind the resistasnce risk calculations. With the resistance risk approach the hospital effluent, a possible hotspot for ARGs, would not have been spotted. For the figures, see under [Supplementary figures.](##supplementary-figures)
+The results show that due to the one outlier (hospital effluent) with higher ARG abundance than would be estimated from the crAssphage abundance the regression is not significant. The regression model between the ARG abundance and resistance risk is significant revealing the main driver behind the resistasnce risk calculations. With the resistance risk approach the hospital effluent, a possible hotspot for ARGs, would not have been spotted. For the figures, see under [Supplementary figures.](#supplementary-figures)
 
 ``` r
 risk_mod_crAss <- lm(ResRisk~log10(crAss_norm), data=res_risk)
