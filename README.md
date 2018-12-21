@@ -16,6 +16,13 @@ crAssphage project
     -   [Figure 4 - Antibiotic resistance gene dynamics in waste water treatment plants](#figure-4---antibiotic-resistance-gene-dynamics-in-waste-water-treatment-plants)
     -   [Estimated resistance risk correlates with fecal pollution](#estimated-resistance-risk-correlates-with-fecal-pollution)
     -   [Supplementary figures](#supplementary-figures)
+        -   [Supplementary Figure 1](#supplementary-figure-1)
+        -   [Supplementary Figure 2](#supplementary-figure-2)
+        -   [Supplementary Figure 3](#supplementary-figure-3)
+        -   [Supplementary Figure 4](#supplementary-figure-4)
+        -   [Supplementary Figure 5](#supplementary-figure-5)
+        -   [Supplementary Figure 6](#supplementary-figure-6)
+        -   [Supplementary Figure 7](#supplementary-figure-7)
 -   [References](#references)
 
 **The document is still under construction...**
@@ -119,12 +126,14 @@ The results from mapping against crAssphage and the gene annotations were import
 Load in the data and libraries needed in the analyses
 -----------------------------------------------------
 
-Both `tidyverse` and `vegan` packageds are needed for the analyses (they can be installed with `install.packages()`).
+Packages `tidyverse`, `vegan` and `gridExtra` are needed for the analyses
+(they can be installed with `install.packages` function).
 In here the results are read to R and the colors used in the figures are defined.
 
 ``` r
 library(tidyverse)
 library(vegan)
+library(gridExtra)
 
 cols <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
@@ -400,7 +409,10 @@ Estimated resistance risk correlates with fecal pollution
 ---------------------------------------------------------
 
 The resistance risk values were taken from the original publication (see main article) and ARG and crAssphage abundances were measured in this publication as described earlier.
-The results show that due to the one outlier (hospital effluent) with higher ARG abundance than would be estimated from the crAssphage abundance the regression is not significant. The regression model between the ARG abundance and resistance risk is significant revealing the main driver behind the resistasnce risk calculations. With the resistance risk approach the hospital effluent, a possible hotspot for ARGs, would not have been spotted. For the figures, see under [Supplementary figures.](#supplementary-figures)
+
+The results show that due to the one outlier (hospital effluent) with higher ARG abundance than would be estimated from the crAssphage abundance the regression is not significant.
+
+The regression model between the ARG abundance and resistance risk is significant revealing the main driver behind the resistasnce risk calculations. With the resistance risk approach the hospital effluent, a possible hotspot for ARGs, would not have been spotted. For the figures, see under [Supplementary figures.](#supplementary-figures)
 
 ``` r
 risk_mod_crAss <- lm(ResRisk~log10(crAss_norm), data=res_risk)
@@ -455,7 +467,97 @@ summary(risk_mod_res)
 Supplementary figures
 ---------------------
 
-some text...
+The supplementary figures are not described in detail. Only the data and codes are provided below.
+
+### Supplementary Figure 1
+
+``` r
+#res_categories <- read.table()
+#ggplot()
+```
+
+### Supplementary Figure 2
+
+``` r
+p1 <- ggplot(crass_impact, aes(x=rel_crAss, y=rel_res, color=country)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() +
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
+       color="Study", shape="crAssphage detection") 
+
+p2 <- ggplot(crass_impact, aes(x=rel_crAss, y=rel_rich, color=country)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() +
+  labs(y = "Normalized ARG richness", x="Normalized crAssphage abundance", 
+       color="Study", shape="crAssphage detection") 
+
+p3 <- ggplot(crass_impact, aes(x=rel_crAss, y=rel_mge, color=country)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() +
+  labs(y = "Normalized MGE abundance", x="Normalized crAssphage abundance", 
+       color="Study", shape="crAssphage detection") 
+
+p4 <- ggplot(crass_impact, aes(x=rel_crAss, y=rel_int, color=country)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() +
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
+       color="Study", shape="crAssphage detection")
+
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-18-1.jpeg)
+
+### Supplementary Figure 3
+
+The most abundant ARGs were removed due to possible bias introduced by the whole genome amplification used in the study.
+
+| Gene     | ResFinder accessions                                     |
+|----------|----------------------------------------------------------|
+| *sul2*   | sul2\_1\_AF542061, sul2\_2\_GQ421466, sul2\_12\_AF497970 |
+| *strA*   | strA\_1\_M96392,                                         |
+| *strB*   | strB\_1\_M96392,                                         |
+| *qnrD*   | QnrD\_1\_FJ228229,                                       |
+| *msr(E)* | msr(E)\_4\_EU294228                                      |
+| *qnrVC*  | QnrVC4\_1\_GQ891757                                      |
+
+``` r
+crass_reduced <- read.table()
+ggplot(crass_reduced, aes(x=rel_crAss, y=rel_res, color=country)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  theme_classic() +
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
+       color="Study", shape="crAssphage detection") + scale_colour_manual(values=cols)
+```
+
+### Supplementary Figure 4
+
+``` r
+MG_RAST_NocrAss <- MG_RAST[is.na(MG_RAST$crAss),]
+MG_RAST_NocrAss <- subset(MG_RAST_NocrAss, feature %in% 
+                            names(table(MG_RAST_NocrAss$feature)[table(MG_RAST_NocrAss$feature)>2]))
+ggplot(MG_RAST_NocrAss, aes(x=feature, y=rel_res)) + geom_boxplot() + theme_classic() + theme(axis.text.x=element_text(angle=45, hjust=1, size=10)) +
+      labs(y = "Normalized ARG abundance", x="")
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-20-1.jpeg)
+
+### Supplementary Figure 5
 
 ``` r
 ggplot(pos_crass, aes(x=predicted, y=res, color=pos_crass$revised_source)) + 
@@ -463,13 +565,44 @@ ggplot(pos_crass, aes(x=predicted, y=res, color=pos_crass$revised_source)) +
   labs(x="Predicted ARG abundance", y="Measured ARG abundance", color="Revised source")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-17-1.jpeg)
+![](README_files/figure-markdown_github/unnamed-chunk-21-1.jpeg)
+
+### Supplementary Figure 6
 
 ``` r
-plot(ResRisk~log10(res_norm), data=res_risk)
+glimpse(crass_wwtp)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-17-2.jpeg)
+    ## Observations: 99
+    ## Variables: 4
+    ## $ rel_crAss    <dbl> 0.32062930, 0.27575551, 0.25977641, 0.04511988, 0...
+    ## $ rel_res      <dbl> 860.4131, 997.0335, 1099.0622, 145.0217, 148.2426...
+    ## $ country      <fct> Sweden 2, Sweden 2, Sweden 2, Sweden 2, Sweden 2,...
+    ## $ country_wwtp <fct> SWE: Uppsala, SWE: Uppsala, SWE: Uppsala, SWE: Up...
+
+``` r
+ggplot(crass_wwtp, aes(rel_crAss, rel_res, shape=country_wwtp)) + 
+  geom_smooth(method="lm") + 
+  geom_point(size=5) + 
+  facet_grid(.~country) +
+  scale_x_log10() + 
+  scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") +
+  theme_classic() + 
+  guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-22-1.jpeg)
+
+### Supplementary Figure 7
+
+``` r
+p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(crAss_norm),color=Sample )) + geom_point() + theme_classic() 
+p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(res_norm),color=Sample )) + geom_point() + theme_classic() 
+grid.arrange(p1,p2, ncol=2)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-23-1.jpeg)
 
 References
 ==========
