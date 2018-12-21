@@ -133,12 +133,13 @@ axis(1, at=1:3, labels=c("China", "Europe", "US"), las=3)
 
 **Figure 1.** Abundance of antibiotic resistance genes, intI1 gene and crAssphage in human fecal metagenomes.
 
-some text...
+The regression model between ARGs and crAssphage shows no significant correlation. 
 ```{r}
-# STATISTICS FOR FIG. 1 here
 crass_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=HMP)
 summary(crass_mod)
-
+```
+However, for ARGs and *intI1* integrase gene the correlation was significant. 
+```{r}
 int_mod <- lm(log10(rel_res)~country+log10(rel_int), data=HMP)
 summary(int_mod)
 ```
@@ -160,9 +161,8 @@ ggplot(crass_impact, aes(x=rel_crAss, y=rel_res, color=country)) +
 **Figure 2.** Correlation between ARG abundance and crAssphage abundance in environments with
 642 pollution from WWTPs, hospitals or drug manufacturing.
 
-some text...
+The regression model for ARGs and crAssphage with different intercepts for different studies. 
 ```{r}
-# Statistics for figure 2 here
 impact_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=crass_impact)
 summary(impact_mod)
 ```
@@ -198,9 +198,18 @@ ggplot(MG_RAST_crass, aes(x=rel_crAss, y=rel_res, color=revised_source)) +
 651 metagenomes where crAssphage was detected.
 
 ## Predicting antibiotic resistance gene abundance with crAssphage 
-some text here.
+The results from the impacted environemnts were used to build a regression model and that model was used to predict the ARG abundance using the crAssphage abundance.
 ```{r}
-# And the model here
+crass_df <- data.frame(crass=log10(crass_impact$rel_crAss), res=log10(crass_impact$rel_res))
+crass_mod <- lm(res~crass, data=crass_df)
+pos_crass <- subset(MG_RAST_crass, revised_source=="River water" | 
+                      revised_source == "Beijing air" | revised_source == "WWTP" )
+pos_crass <- data.frame(crass=log10(pos_crass$rel_crAss), res=log10(pos_crass$rel_res), 
+                        sample=row.names(pos_crass), revised_source=pos_crass$revised_source)
+pos_crass$predicted <- predict(crass_mod, pos_crass)
+
+pred_mod <- (lm(res~predicted, data=pos_crass))
+summary(pred_mod)
 ```
 
 ## Figure 4 - Antibiotic resistance gene dynamics in waste water treatment plants 
@@ -219,23 +228,31 @@ ggplot(crass_wwtp, aes(rel_crAss, rel_res, color=country_wwtp)) +
 **Figure 4.** ARG and crAssphage abundance in two US and three Swedish waste water treatment
 658 plants showing similar correlation with different base level of resistance.  
 
-some text...
+The correlation was significant and similar in both countries. Only the intercept differed. 
 ```{r}
-# And the statistics for fig 4 here
 wwtp_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=crass_wwtp)
 summary(wwtp_mod)
 ```
 
 ## Estimated resistance risk correlates with fecal pollution 
-some text here...
+The resistance risk values were taken from the original publication (see main article) and ARG and crAssphage abundances were measured in this publication as described earlier.  
+The results show that due to the one outlier (hospital effluent) with higher ARG abundance than would be estimated from the crAssphage abundance the regression is not significant. The regression model between the ARG abundance and resistance risk is significant revealing the main driver behind the resistasnce risk calculations. With the resistance risk approach the hospital effluent, a possible hotspot for ARGs, would not have been spotted. For the figures, see under [Supplementary figures.](## Supplementary figures)
 ```{r}
-# and analyses here
+risk_mod_crAss <- lm(ResRisk~log10(crAss_norm), data=res_risk)
+summary(risk_mod_crAss)
+risk_mod_res <- lm(ResRisk~log10(res_norm), data=res_risk)
+summary(risk_mod_res)
 ```
 
 ## Supplementary figures
 some text...
 ```{r}
-# and all the figures here
+
+ggplot(pos_crass, aes(x=predicted, y=res, color=pos_crass$revised_source)) + 
+  geom_point(size=5) + theme_classic() + 
+  labs(x="Predicted ARG abundance", y="Measured ARG abundance", color="Revised source")
+
+plot(ResRisk~log10(res_norm), data=res_risk)
 ```
 
 

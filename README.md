@@ -170,10 +170,9 @@ axis(1, at=1:3, labels=c("China", "Europe", "US"), las=3)
 
 **Figure 1.** Abundance of antibiotic resistance genes, intI1 gene and crAssphage in human fecal metagenomes.
 
-some text...
+The regression model between ARGs and crAssphage shows no significant correlation.
 
 ``` r
-# STATISTICS FOR FIG. 1 here
 crass_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=HMP)
 summary(crass_mod)
 ```
@@ -199,6 +198,8 @@ summary(crass_mod)
     ##   (163 observations deleted due to missingness)
     ## Multiple R-squared:  0.2134, Adjusted R-squared:  0.2051 
     ## F-statistic: 25.51 on 3 and 282 DF,  p-value: 1.25e-14
+
+However, for ARGs and *intI1* integrase gene the correlation was significant.
 
 ``` r
 int_mod <- lm(log10(rel_res)~country+log10(rel_int), data=HMP)
@@ -243,14 +244,13 @@ ggplot(crass_impact, aes(x=rel_crAss, y=rel_res, color=country)) +
        color="Study", shape="crAssphage detection") + scale_colour_manual(values=cols)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-9-1.jpeg)
+![](README_files/figure-markdown_github/unnamed-chunk-10-1.jpeg)
 
 **Figure 2.** Correlation between ARG abundance and crAssphage abundance in environments with 642 pollution from WWTPs, hospitals or drug manufacturing.
 
-some text...
+The regression model for ARGs and crAssphage with different intercepts for different studies.
 
 ``` r
-# Statistics for figure 2 here
 impact_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=crass_impact)
 summary(impact_mod)
 ```
@@ -309,18 +309,46 @@ ggplot(MG_RAST_crass, aes(x=rel_crAss, y=rel_res, color=revised_source)) +
        color = "Revised source") + scale_colour_manual(values=cols)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-11-1.jpeg)
+![](README_files/figure-markdown_github/unnamed-chunk-12-1.jpeg)
 
 **Figure 3.** The correlation between crAssphage abundance and total ARG abundance in MG-RAST 651 metagenomes where crAssphage was detected.
 
 Predicting antibiotic resistance gene abundance with crAssphage
 ---------------------------------------------------------------
 
-some text here.
+The results from the impacted environemnts were used to build a regression model and that model was used to predict the ARG abundance using the crAssphage abundance.
 
 ``` r
-# And the model here
+crass_df <- data.frame(crass=log10(crass_impact$rel_crAss), res=log10(crass_impact$rel_res))
+crass_mod <- lm(res~crass, data=crass_df)
+pos_crass <- subset(MG_RAST_crass, revised_source=="River water" | 
+                      revised_source == "Beijing air" | revised_source == "WWTP" )
+pos_crass <- data.frame(crass=log10(pos_crass$rel_crAss), res=log10(pos_crass$rel_res), 
+                        sample=row.names(pos_crass), revised_source=pos_crass$revised_source)
+pos_crass$predicted <- predict(crass_mod, pos_crass)
+
+pred_mod <- (lm(res~predicted, data=pos_crass))
+summary(pred_mod)
 ```
+
+    ## 
+    ## Call:
+    ## lm(formula = res ~ predicted, data = pos_crass)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.4272 -0.4254  0.1773  0.4796  0.9121 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept) -11.7612     2.3693  -4.964 3.06e-05 ***
+    ## predicted     5.4630     0.9267   5.895 2.43e-06 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.627 on 28 degrees of freedom
+    ## Multiple R-squared:  0.5538, Adjusted R-squared:  0.5379 
+    ## F-statistic: 34.76 on 1 and 28 DF,  p-value: 2.426e-06
 
 Figure 4 - Antibiotic resistance gene dynamics in waste water treatment plants
 ------------------------------------------------------------------------------
@@ -337,14 +365,13 @@ ggplot(crass_wwtp, aes(rel_crAss, rel_res, color=country_wwtp)) +
        color="Country:WWTP")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-13-1.jpeg)
+![](README_files/figure-markdown_github/unnamed-chunk-14-1.jpeg)
 
 **Figure 4.** ARG and crAssphage abundance in two US and three Swedish waste water treatment 658 plants showing similar correlation with different base level of resistance.
 
-some text...
+The correlation was significant and similar in both countries. Only the intercept differed.
 
 ``` r
-# And the statistics for fig 4 here
 wwtp_mod <- lm(log10(rel_res)~country+log10(rel_crAss), data=crass_wwtp)
 summary(wwtp_mod)
 ```
@@ -372,11 +399,58 @@ summary(wwtp_mod)
 Estimated resistance risk correlates with fecal pollution
 ---------------------------------------------------------
 
-some text here...
+The resistance risk values were taken from the original publication (see main article) and ARG and crAssphage abundances were measured in this publication as described earlier.
+The results show that due to the one outlier (hospital effluent) with higher ARG abundance than would be estimated from the crAssphage abundance the regression is not significant. The regression model between the ARG abundance and resistance risk is significant revealing the main driver behind the resistasnce risk calculations. With the resistance risk approach the hospital effluent, a possible hotspot for ARGs, would not have been spotted. For the figures, see under [Supplementary figures.](##%20Supplementary%20figures)
 
 ``` r
-# and analyses here
+risk_mod_crAss <- lm(ResRisk~log10(crAss_norm), data=res_risk)
+summary(risk_mod_crAss)
 ```
+
+    ## 
+    ## Call:
+    ## lm(formula = ResRisk ~ log10(crAss_norm), data = res_risk)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -10.2531  -4.0653  -0.8415   5.7602  13.5574 
+    ## 
+    ## Coefficients:
+    ##                   Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)         33.130      2.753  12.034 6.24e-06 ***
+    ## log10(crAss_norm)    4.729      2.851   1.659    0.141    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 8.087 on 7 degrees of freedom
+    ##   (5 observations deleted due to missingness)
+    ## Multiple R-squared:  0.2822, Adjusted R-squared:  0.1796 
+    ## F-statistic: 2.752 on 1 and 7 DF,  p-value: 0.1411
+
+``` r
+risk_mod_res <- lm(ResRisk~log10(res_norm), data=res_risk)
+summary(risk_mod_res)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = ResRisk ~ log10(res_norm), data = res_risk)
+    ## 
+    ## Residuals:
+    ##    Min     1Q Median     3Q    Max 
+    ## -5.002 -2.983 -1.173  3.959  4.364 
+    ## 
+    ## Coefficients:
+    ##                 Estimate Std. Error t value Pr(>|t|)   
+    ## (Intercept)       -7.422      7.545  -0.984  0.35799   
+    ## log10(res_norm)   10.155      1.899   5.346  0.00107 **
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 4.233 on 7 degrees of freedom
+    ##   (5 observations deleted due to missingness)
+    ## Multiple R-squared:  0.8033, Adjusted R-squared:  0.7752 
+    ## F-statistic: 28.58 on 1 and 7 DF,  p-value: 0.001069
 
 Supplementary figures
 ---------------------
@@ -384,8 +458,18 @@ Supplementary figures
 some text...
 
 ``` r
-# and all the figures here
+ggplot(pos_crass, aes(x=predicted, y=res, color=pos_crass$revised_source)) + 
+  geom_point(size=5) + theme_classic() + 
+  labs(x="Predicted ARG abundance", y="Measured ARG abundance", color="Revised source")
 ```
+
+![](README_files/figure-markdown_github/unnamed-chunk-17-1.jpeg)
+
+``` r
+plot(ResRisk~log10(res_norm), data=res_risk)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-17-2.jpeg)
 
 References
 ==========
