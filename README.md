@@ -121,7 +121,7 @@ To bp count in each metagenome was used for normalization.
 Data analysis and statistics in R
 =================================
 
-The results from mapping against crAssphage and the gene annotations were imported to R and combined in data frames. Resulting data frames for each part of te study can be found from the `data`folder.
+The results from mapping against crAssphage and the gene annotations were imported to R and combined in data frames. Resulting data frames for each part of the study can be found from the `data`folder.
 
 Load in the data and libraries needed in the analyses
 -----------------------------------------------------
@@ -570,17 +570,8 @@ ggplot(pos_crass, aes(x=predicted, y=res, color=pos_crass$revised_source)) +
 ### Supplementary Figure 6
 
 ``` r
-glimpse(crass_wwtp)
-```
-
-    ## Observations: 99
-    ## Variables: 4
-    ## $ rel_crAss    <dbl> 0.32062930, 0.27575551, 0.25977641, 0.04511988, 0...
-    ## $ rel_res      <dbl> 860.4131, 997.0335, 1099.0622, 145.0217, 148.2426...
-    ## $ country      <fct> Sweden 2, Sweden 2, Sweden 2, Sweden 2, Sweden 2,...
-    ## $ country_wwtp <fct> SWE: Uppsala, SWE: Uppsala, SWE: Uppsala, SWE: Up...
-
-``` r
+#glimpse(crass_wwtp)
+#str_split_fixed(crass_wwtp$country_wwtp, pattern=":", n=2) %>% data.frame() 
 ggplot(crass_wwtp, aes(rel_crAss, rel_res, shape=country_wwtp)) + 
   geom_smooth(method="lm") + 
   geom_point(size=5) + 
