@@ -86,7 +86,7 @@ python parse_diamondPE.py -i SampleY_res.txt -o SampleY_ResFinder.csv
 To bp count in each metagenome was used for normalization. 
 
 # Data analysis and statistics in R
-The results from mapping against crAssphage and the gene annotations were imported to R and combined in data frames. Resulting data frames for each part of te study can be found from the `data`folder.  
+The results from mapping against crAssphage and the gene annotations were imported to R and combined in data frames. Resulting data frames for each part of the study can be found from the `data`folder.  
 
 ## Load in the data and libraries needed in the analyses
 Packages `tidyverse`, `vegan` and `gridExtra` are needed for the analyses  
