@@ -342,8 +342,16 @@ ggplot(pos_crass, aes(x=predicted, y=res, color=pos_crass$revised_source)) +
 
 ### Supplementary Figure 6
 ```{r}
-#glimpse(crass_wwtp)
-#str_split_fixed(crass_wwtp$country_wwtp, pattern=":", n=2) %>% data.frame() 
+p1 <-  ggplot(US_WWTP, aes(rel_crAss, rel_res, shape=geo_loc_name)) + geom_smooth(method="lm") + geom_point(aes(color=Sample_loc), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + theme_classic() +
+      guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+
+p2 <- ggplot(Swe_wwtp_df, aes(rel_crAss, rel_res, shape=WWTP)) + geom_smooth(method="lm") + geom_point(aes(color=Sample), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + theme_classic() +
+      guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+
+plot_grid(p1, p2, labels=c("A", "B"))
+
 ggplot(crass_wwtp, aes(rel_crAss, rel_res, shape=country_wwtp)) + 
   geom_smooth(method="lm") + 
   geom_point(size=5) + 
