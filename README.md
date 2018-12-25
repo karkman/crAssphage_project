@@ -509,40 +509,78 @@ The ARG categories are based on the ResFinder annotations.
 crass_categ <- read.table("data/crAss_categ.txt")
 
 # Tetracycline
-p1 <- ggplot(crass_categ, aes(rel_crAss, rel_tet, color=country)) + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Tetracycline", shape="crAssphage detection") + theme_classic()
+p1 <- ggplot(crass_categ, aes(rel_crAss, rel_tet, color=country)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+       title="Tetracycline", shape="crAssphage detection") + 
+  theme_classic()
 
 # Aminoglycoside
-p2 <- ggplot(crass_categ, aes(rel_crAss, rel_amino, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Aminoglycoside", shape="crAssphage detection") + theme_classic()
+p2 <- ggplot(crass_categ, aes(rel_crAss, rel_amino, color=country))  + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+       title="Aminoglycoside", shape="crAssphage detection") + 
+  theme_classic()
 
 # MLSB
-p3 <- ggplot(crass_categ, aes(rel_crAss, rel_mls, color=country)) + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="MLSB", shape="crAssphage detection") + theme_classic()
+p3 <- ggplot(crass_categ, aes(rel_crAss, rel_mls, color=country)) + 
+  geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+           title="MLSB", shape="crAssphage detection") + 
+  theme_classic()
 
 # Beta_lactam
-p4 <- ggplot(crass_categ, aes(rel_crAss, rel_beta, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Beta-lactam", shape="crAssphage detection") + theme_classic()
+p4 <- ggplot(crass_categ, aes(rel_crAss, rel_beta, color=country))  + 
+  geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+           title="Beta-lactam", shape="crAssphage detection") + 
+  theme_classic()
 
 # Trimethoprim
-p5 <- ggplot(crass_categ, aes(rel_crAss, rel_tri, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Trimethoprim", shape="crAssphage detection") + theme_classic()
+p5 <- ggplot(crass_categ, aes(rel_crAss, rel_tri, color=country))  + 
+  geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+           title="Trimethoprim", shape="crAssphage detection") + 
+  theme_classic()
 
 # Sulphonamide
-p6 <- ggplot(crass_categ, aes(rel_crAss, rel_sul, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Sulphonamide", shape="crAssphage detection") + theme_classic()
+p6 <- ggplot(crass_categ, aes(rel_crAss, rel_sul, color=country))  + 
+  geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+           title="Sulphonamide", shape="crAssphage detection") + 
+  theme_classic()
 
  # Vancomycin
-p7 <- ggplot(crass_categ, aes(rel_crAss, rel_van, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Vancomycin", shape="crAssphage detection") + theme_classic()
+p7 <- ggplot(crass_categ, aes(rel_crAss, rel_van, color=country))  + 
+  geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+           title="Vancomycin", shape="crAssphage detection") + 
+  theme_classic()
 
 # Chloramphenicol
-p8 <- ggplot(crass_categ, aes(rel_crAss, rel_clo, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Chloramphenicol", shape="crAssphage detection") + theme_classic()
+p8 <- ggplot(crass_categ, aes(rel_crAss, rel_clo, color=country))  + 
+  geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+           title="Chloramphenicol", shape="crAssphage detection") + 
+  theme_classic()
 
 # Quinolone
-p9 <- ggplot(crass_categ, aes(rel_crAss, rel_qui, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Quinolone", shape="crAssphage detection") + theme_classic()
+p9 <- ggplot(crass_categ, aes(rel_crAss, rel_qui, color=country))  +
+  geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+           title="Quinolone", shape="crAssphage detection") + 
+  theme_classic()
 
 grid_arrange_shared_legend(p1, p2, p3, p4, p5, p6, p7, p8, p9, ncol=3, nrow=3)
 ```
@@ -624,7 +662,11 @@ ggplot(crass_reduced, aes(x=rel_crAss, y=rel_res, color=country)) +
 MG_RAST_NocrAss <- MG_RAST[is.na(MG_RAST$crAss),]
 MG_RAST_NocrAss <- subset(MG_RAST_NocrAss, feature %in% 
                             names(table(MG_RAST_NocrAss$feature)[table(MG_RAST_NocrAss$feature)>2]))
-ggplot(MG_RAST_NocrAss, aes(x=feature, y=rel_res)) + geom_boxplot() + theme_classic() + theme(axis.text.x=element_text(angle=45, hjust=1, size=10)) +
+
+ggplot(MG_RAST_NocrAss, aes(x=feature, y=rel_res)) + 
+  geom_boxplot() + 
+  theme_classic() + 
+  theme(axis.text.x=element_text(angle=45, hjust=1, size=10)) +
       labs(y = "Normalized ARG abundance", x="")
 ```
 
@@ -650,7 +692,7 @@ More detailed annotations for the WWTPs taken from the original publications. No
 | Primary             | Primary sludge               |
 | Surplus             | Sludge                       |
 | Digested            | Digested sludge              |
-| Inlet - ..          | Raw Sewage                   |
+| Inlet - ...         | Raw Sewage                   |
 | Treated             | Treated sewage               |
 | Sand-filtered       | Sand-filtered treated sewage |
 
@@ -682,41 +724,7 @@ grid.arrange(p1, p2, ncol=2)
 ### Supplementary Figure 7
 
 ``` r
-res_risk
-```
-
-    ##              SampleID          Sample ResRisk      crAss res_sum
-    ## ERR1191817 ERS1019923 Hospital Sewage   36.23 59.0749000   83901
-    ## ERR1191818 ERS1019924 Hospital Sewage   43.00 16.2415000  111328
-    ## ERR1191819 ERS1019925 Hospital Sewage   34.62 17.0850000  149072
-    ## ERR1191820 ERS1019926 Hospital Sewage   34.47  3.5450200  102537
-    ## ERR1191821 ERS1019927 Hospital Sewage   39.47  0.0844795   43766
-    ## ERR1191822 ERS1019928 Hospital Sewage   39.24  3.6045200   48752
-    ## ERR1193290 ERS1019947   WWTP Effluent   21.59  1.7627700     882
-    ## ERR1193291 ERS1019948   WWTP Effluent   18.42  0.1749650    3993
-    ## ERR1193297 ERS1019955    Dairy Lagoon   24.20         NA      NA
-    ## ERR1193298 ERS1019956    Dairy Lagoon   22.71         NA      NA
-    ## ERR1193300 ERS1019958    Dairy Lagoon   26.82         NA      NA
-    ## ERR1193301 ERS1019959    Dairy Lagoon   29.02         NA      NA
-    ## ERR1193332 ERS1020022    Dairy Lagoon   24.82         NA      NA
-    ## ERR1193333 ERS1020020   WWTP Effluent   22.77  0.1339210    5218
-    ##                    bp  crAss_norm   res_norm Land
-    ## ERR1191817 3232961500 18.27268899 25951.7473   UK
-    ## ERR1191818 2617770800  6.20432469 42527.7874   UK
-    ## ERR1191819 5489782600  3.11214510 27154.4451   UK
-    ## ERR1191820 3078669000  1.15147812 33305.6266   UK
-    ## ERR1191821 2836914500  0.02977866 15427.3243   UK
-    ## ERR1191822 3039642400  1.18583686 16038.7288   UK
-    ## ERR1193290 3298030100  0.53449179   267.4324   UK
-    ## ERR1193291 3663675800  0.04775668  1089.8890   UK
-    ## ERR1193297         NA          NA         NA <NA>
-    ## ERR1193298         NA          NA         NA <NA>
-    ## ERR1193300         NA          NA         NA <NA>
-    ## ERR1193301         NA          NA         NA <NA>
-    ## ERR1193332         NA          NA         NA <NA>
-    ## ERR1193333 2869623900  0.04666849  1818.3568   UK
-
-``` r
+# The ARG data on the dairy lagoon still missing.
 p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(crAss_norm),color=Sample )) + geom_point(size=5) + 
   theme_classic() 
 p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(res_norm),color=Sample )) + geom_point(size=5) + 
