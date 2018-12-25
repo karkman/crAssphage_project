@@ -126,13 +126,14 @@ The results from mapping against crAssphage and the gene annotations were import
 Load in the data and libraries needed in the analyses
 -----------------------------------------------------
 
-Packages `tidyverse`, `vegan` and `gridExtra` are needed for the analyses
+Packages `tidyverse`, `vegan`, `grid` and `gridExtra` are needed for the analyses
 (they can be installed with `install.packages` function).
 In here the results are read to R and the colors used in the figures are defined.
 
 ``` r
 library(tidyverse)
 library(vegan)
+library(grid)
 library(gridExtra)
 
 cols <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -142,59 +143,7 @@ crass_impact <- read.table("data/crass_impact.txt")
 MG_RAST <- read.table("data/MG-RAST.txt")
 crass_wwtp <- read.table("data/crass_wwtp.txt")
 res_risk <- read.table("data/res_risk.txt")
-us_wwtp <- read.table("data/us_wwtp.txt")
-swe_wwtp <- read.table("data/swe_wwtp.txt")
-glimpse(us_wwtp)
 ```
-
-    ## Observations: 29
-    ## Variables: 46
-    ## $ crAss              <dbl> 0.628775, 0.336012, 0.118601, 0.561150, 8.8...
-    ## $ res                <int> 477, 243, 153, 547, 2255, 327, 255, 296, 54...
-    ## $ rich               <int> 124, 78, 67, 126, 185, 77, 70, 85, 262, 139...
-    ## $ mge                <int> 9224, 2454, 1542, 7284, 41108, 3273, 2839, ...
-    ## $ intI1              <int> 58, 15, 6, 41, 90, 25, 25, 27, 675, 363, 40...
-    ## $ bp                 <dbl> 2429184568, 2286906739, 1039652891, 2841355...
-    ## $ rel_crAss          <dbl> 0.2588420, 0.1469286, 0.1140775, 0.1974938,...
-    ## $ rel_res            <dbl> 196.3622, 106.2571, 147.1645, 192.5138, 320...
-    ## $ rel_rich           <dbl> 51.04594, 34.10721, 64.44459, 44.34504, 26....
-    ## $ rel_mge            <dbl> 3797.159, 1073.065, 1483.187, 2563.565, 583...
-    ## $ rel_int            <dbl> 23.876325, 6.559078, 5.771157, 14.429734, 1...
-    ## $ country            <fct> US, US, US, US, US, US, US, US, US, US, US,...
-    ## $ AvgSpotLen         <int> 198, 198, 198, 198, 200, 200, 200, 200, 200...
-    ## $ BioSample          <fct> SAMN06928187, SAMN06928188, SAMN06928189, S...
-    ## $ Experiment         <fct> SRX2805470, SRX2805469, SRX2805468, SRX2805...
-    ## $ Library_Name       <fct> SE_P, SE1, SE2, SE3, E_P, E1, E2, E3, FS2, ...
-    ## $ LoadDate           <fct> 2017-05-12, 2017-05-12, 2017-05-12, 2017-05...
-    ## $ MBases             <int> 2316, 2180, 991, 2709, 6720, 2860, 1865, 21...
-    ## $ MBytes             <int> 807, 746, 341, 929, 2256, 955, 619, 709, 18...
-    ## $ Organism           <fct> freshwater metagenome, freshwater metagenom...
-    ## $ ReleaseDate        <fct> 2018-01-10, 2018-01-10, 2018-01-10, 2018-01...
-    ## $ Replicate          <fct> , , , , , , , , 2, 1, 3, 2, 1, Prefilter, 3...
-    ## $ Run                <fct> SRR5535873, SRR5535874, SRR5535875, SRR5535...
-    ## $ SRA_Sample         <fct> SRS2185308, SRS2185307, SRS2185306, SRS2185...
-    ## $ Sample_Name        <fct> SE_P, SE1, SE2, SE3, E_P, E1, E2, E3, FS2, ...
-    ## $ collection_date    <fct> 15-Jul-2015, 15-Jul-2015, 15-Jul-2015, 15-J...
-    ## $ geo_loc_name       <fct> USA: Sheboygan, WI, USA: Sheboygan, WI, USA...
-    ## $ isolation_source   <fct> Sheboygan Effluent, Sheboygan Effluent, She...
-    ## $ lat_lon            <fct> 43.718756 N 87.708365 W, 43.718756 N 87.708...
-    ## $ samp_size          <fct> L, L, L, L, L, L, L, L, , , , , , , , , , ,...
-    ## $ Assay_Type         <fct> WGS, WGS, WGS, WGS, WGS, WGS, WGS, WGS, WGS...
-    ## $ BioProject         <fct> PRJNA385831, PRJNA385831, PRJNA385831, PRJN...
-    ## $ BioSampleModel     <fct> Metagenome or environmental, Metagenome or ...
-    ## $ Consent            <fct> public, public, public, public, public, pub...
-    ## $ DATASTORE_filetype <fct> sra, sra, sra, sra, sra, sra, sra, sra, sra...
-    ## $ DATASTORE_provider <fct> ncbi, ncbi, ncbi, ncbi, ncbi, ncbi, ncbi, n...
-    ## $ InsertSize         <int> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0...
-    ## $ Instrument         <fct> Illumina HiSeq 2500, Illumina HiSeq 2500, I...
-    ## $ LibraryLayout      <fct> PAIRED, PAIRED, PAIRED, PAIRED, PAIRED, PAI...
-    ## $ LibrarySelection   <fct> RANDOM, RANDOM, RANDOM, RANDOM, RANDOM, RAN...
-    ## $ LibrarySource      <fct> METAGENOMIC, METAGENOMIC, METAGENOMIC, META...
-    ## $ Platform           <fct> ILLUMINA, ILLUMINA, ILLUMINA, ILLUMINA, ILL...
-    ## $ SRA_Study          <fct> SRP107015, SRP107015, SRP107015, SRP107015,...
-    ## $ host               <fct> not applicable, not applicable, not applica...
-    ## $ Sample_loc         <fct> Effluent, Effluent, Effluent, Effluent, Eff...
-    ## $ country_wwtp       <fct> USA: Sheboygan, WI, USA: Sheboygan, WI, USA...
 
 Figure 1 - crAssphage and ARG dynamics in human feacal metagenomes
 ------------------------------------------------------------------
@@ -521,12 +470,84 @@ Supplementary figures
 
 The supplementary figures are not described in detail. Only the data and codes are provided below.
 
-### Supplementary Figure 1
+A function for shared legend in multi panel plots copied from [here](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
 
 ``` r
-#res_categories <- read.table()
-#ggplot()
+grid_arrange_shared_legend <- function(..., ncol = length(list(...)), nrow = 1, position = c("bottom", "right")) {
+  require(gridExtra)
+  require(grid)
+  plots <- list(...)
+  position <- match.arg(position)
+  g <- ggplotGrob(plots[[1]] + theme(legend.position = position))$grobs
+  legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
+  lheight <- sum(legend$height)
+  lwidth <- sum(legend$width)
+  gl <- lapply(plots, function(x) x + theme(legend.position="none"))
+  gl <- c(gl, ncol = ncol, nrow = nrow)
+
+  combined <- switch(position,
+                     "bottom" = arrangeGrob(do.call(arrangeGrob, gl),
+                                            legend,
+                                            ncol = 1,
+                                            heights = unit.c(unit(1, "npc") - lheight, lheight)),
+                     "right" = arrangeGrob(do.call(arrangeGrob, gl),
+                                           legend,
+                                           ncol = 2,
+                                           widths = unit.c(unit(1, "npc") - lwidth, lwidth)))
+  grid.newpage()
+  grid.draw(combined)
+  # return gtable invisibly
+  invisible(combined)
+}
 ```
+
+### Supplementary Figure 1
+
+The ARG categories are based on the ResFinder annotations.
+
+``` r
+crass_categ <- read.table("data/crAss_categ.txt")
+
+# Tetracycline
+p1 <- ggplot(crass_categ, aes(rel_crAss, rel_tet, color=country)) + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Tetracycline", shape="crAssphage detection") + theme_classic()
+
+# Aminoglycoside
+p2 <- ggplot(crass_categ, aes(rel_crAss, rel_amino, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Aminoglycoside", shape="crAssphage detection") + theme_classic()
+
+# MLSB
+p3 <- ggplot(crass_categ, aes(rel_crAss, rel_mls, color=country)) + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="MLSB", shape="crAssphage detection") + theme_classic()
+
+# Beta_lactam
+p4 <- ggplot(crass_categ, aes(rel_crAss, rel_beta, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Beta-lactam", shape="crAssphage detection") + theme_classic()
+
+# Trimethoprim
+p5 <- ggplot(crass_categ, aes(rel_crAss, rel_tri, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Trimethoprim", shape="crAssphage detection") + theme_classic()
+
+# Sulphonamide
+p6 <- ggplot(crass_categ, aes(rel_crAss, rel_sul, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Sulphonamide", shape="crAssphage detection") + theme_classic()
+
+ # Vancomycin
+p7 <- ggplot(crass_categ, aes(rel_crAss, rel_van, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Vancomycin", shape="crAssphage detection") + theme_classic()
+
+# Chloramphenicol
+p8 <- ggplot(crass_categ, aes(rel_crAss, rel_clo, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Chloramphenicol", shape="crAssphage detection") + theme_classic()
+
+# Quinolone
+p9 <- ggplot(crass_categ, aes(rel_crAss, rel_qui, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Quinolone", shape="crAssphage detection") + theme_classic()
+
+grid_arrange_shared_legend(p1, p2, p3, p4, p5, p6, p7, p8, p9, ncol=3, nrow=3)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-18-1.jpeg)
 
 ### Supplementary Figure 2
 
@@ -567,10 +588,10 @@ p4 <- ggplot(crass_impact, aes(x=rel_crAss, y=rel_int, color=country)) +
   labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
        color="Study", shape="crAssphage detection")
 
-grid.arrange(p1, p2, p3, p4, ncol=2)
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol=2, nrow=2)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-18-1.jpeg)
+![](README_files/figure-markdown_github/unnamed-chunk-19-1.jpeg)
 
 ### Supplementary Figure 3
 
@@ -607,7 +628,7 @@ ggplot(MG_RAST_NocrAss, aes(x=feature, y=rel_res)) + geom_boxplot() + theme_clas
       labs(y = "Normalized ARG abundance", x="")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-20-1.jpeg)
+![](README_files/figure-markdown_github/unnamed-chunk-21-1.jpeg)
 
 ### Supplementary Figure 5
 
@@ -617,33 +638,93 @@ ggplot(pos_crass, aes(x=predicted, y=res, color=pos_crass$revised_source)) +
   labs(x="Predicted ARG abundance", y="Measured ARG abundance", color="Revised source")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-21-1.jpeg)
+![](README_files/figure-markdown_github/unnamed-chunk-22-1.jpeg)
 
 ### Supplementary Figure 6
 
-``` r
-p1 <-  ggplot(us_wwtp, aes(rel_crAss, rel_res, shape=geo_loc_name)) + geom_smooth(method="lm") + geom_point(aes(color=Sample_loc), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + theme_classic() +
-      guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+More detailed annotations for the WWTPs taken from the original publications. Note the slightly different samples annotations between US and SWE due to differences in the processes. Also the SWE WWTP sample annotations have been modified.
 
-p2 <- ggplot(swe_wwtp, aes(rel_crAss, rel_res, shape=WWTP)) + geom_smooth(method="lm") + geom_point(aes(color=Sample), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + theme_classic() +
-      guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+| Original annotation | Modified annotation          |
+|---------------------|------------------------------|
+| Primary/Surplus     | Primary sludge               |
+| Primary             | Primary sludge               |
+| Surplus             | Sludge                       |
+| Digested            | Digested sludge              |
+| Inlet - ..          | Raw Sewage                   |
+| Treated             | Treated sewage               |
+| Sand-filtered       | Sand-filtered treated sewage |
+
+``` r
+us_wwtp <- read.table("data/us_wwtp.txt")
+swe_wwtp <- read.table("data/swe_wwtp.txt")
+
+p1 <-  ggplot(us_wwtp, aes(rel_crAss, rel_res, shape=geo_loc_name)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(color=Sample_loc), size=5) + 
+  scale_x_log10() + scale_y_log10() +
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + 
+  theme_classic() +
+  guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+
+p2 <- ggplot(swe_wwtp, aes(rel_crAss, rel_res, shape=WWTP)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(color=Sample), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + 
+  theme_classic() + 
+  guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
 
 grid.arrange(p1, p2, ncol=2)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-22-1.jpeg)
+![](README_files/figure-markdown_github/unnamed-chunk-23-1.jpeg)
 
 ### Supplementary Figure 7
 
 ``` r
-p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(crAss_norm),color=Sample )) + geom_point() + theme_classic() 
-p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(res_norm),color=Sample )) + geom_point() + theme_classic() 
-grid.arrange(p1,p2, ncol=2)
+res_risk
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-23-1.jpeg)
+    ##              SampleID          Sample ResRisk      crAss res_sum
+    ## ERR1191817 ERS1019923 Hospital Sewage   36.23 59.0749000   83901
+    ## ERR1191818 ERS1019924 Hospital Sewage   43.00 16.2415000  111328
+    ## ERR1191819 ERS1019925 Hospital Sewage   34.62 17.0850000  149072
+    ## ERR1191820 ERS1019926 Hospital Sewage   34.47  3.5450200  102537
+    ## ERR1191821 ERS1019927 Hospital Sewage   39.47  0.0844795   43766
+    ## ERR1191822 ERS1019928 Hospital Sewage   39.24  3.6045200   48752
+    ## ERR1193290 ERS1019947   WWTP Effluent   21.59  1.7627700     882
+    ## ERR1193291 ERS1019948   WWTP Effluent   18.42  0.1749650    3993
+    ## ERR1193297 ERS1019955    Dairy Lagoon   24.20         NA      NA
+    ## ERR1193298 ERS1019956    Dairy Lagoon   22.71         NA      NA
+    ## ERR1193300 ERS1019958    Dairy Lagoon   26.82         NA      NA
+    ## ERR1193301 ERS1019959    Dairy Lagoon   29.02         NA      NA
+    ## ERR1193332 ERS1020022    Dairy Lagoon   24.82         NA      NA
+    ## ERR1193333 ERS1020020   WWTP Effluent   22.77  0.1339210    5218
+    ##                    bp  crAss_norm   res_norm Land
+    ## ERR1191817 3232961500 18.27268899 25951.7473   UK
+    ## ERR1191818 2617770800  6.20432469 42527.7874   UK
+    ## ERR1191819 5489782600  3.11214510 27154.4451   UK
+    ## ERR1191820 3078669000  1.15147812 33305.6266   UK
+    ## ERR1191821 2836914500  0.02977866 15427.3243   UK
+    ## ERR1191822 3039642400  1.18583686 16038.7288   UK
+    ## ERR1193290 3298030100  0.53449179   267.4324   UK
+    ## ERR1193291 3663675800  0.04775668  1089.8890   UK
+    ## ERR1193297         NA          NA         NA <NA>
+    ## ERR1193298         NA          NA         NA <NA>
+    ## ERR1193300         NA          NA         NA <NA>
+    ## ERR1193301         NA          NA         NA <NA>
+    ## ERR1193332         NA          NA         NA <NA>
+    ## ERR1193333 2869623900  0.04666849  1818.3568   UK
+
+``` r
+p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(crAss_norm),color=Sample )) + geom_point(size=5) + 
+  theme_classic() 
+p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(res_norm),color=Sample )) + geom_point(size=5) + 
+  theme_classic() 
+grid_arrange_shared_legend(p1,p2, ncol=2)
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-24-1.jpeg)
 
 References
 ==========

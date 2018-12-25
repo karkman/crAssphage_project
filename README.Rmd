@@ -89,12 +89,13 @@ To bp count in each metagenome was used for normalization.
 The results from mapping against crAssphage and the gene annotations were imported to R and combined in data frames. Resulting data frames for each part of the study can be found from the `data`folder.  
 
 ## Load in the data and libraries needed in the analyses
-Packages `tidyverse`, `vegan` and `gridExtra` are needed for the analyses  
+Packages `tidyverse`, `vegan`, `grid` and `gridExtra` are needed for the analyses  
 (they can be installed with `install.packages` function).   
 In here the results are read to R and the colors used in the figures are defined.
 ```{r, message=FALSE}
 library(tidyverse)
 library(vegan)
+library(grid)
 library(gridExtra)
 
 cols <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
@@ -104,10 +105,8 @@ crass_impact <- read.table("data/crass_impact.txt")
 MG_RAST <- read.table("data/MG-RAST.txt")
 crass_wwtp <- read.table("data/crass_wwtp.txt")
 res_risk <- read.table("data/res_risk.txt")
-us_wwtp <- read.table("data/us_wwtp.txt")
-swe_wwtp <- read.table("data/swe_wwtp.txt")
-glimpse(us_wwtp)
 ```
+
 ## Figure 1 - crAssphage and ARG dynamics in human feacal metagenomes 
 The first figure shows the correlation between crAssphage and ARGs and _intI1_ integrase gene in human fecal metagenomes in different populations. 
 ```{r, warning=FALSE, fig.height=6, fig.width=12}
@@ -255,10 +254,78 @@ summary(risk_mod_res)
 ## Supplementary figures
 The supplementary figures are not described in detail. Only the data and codes are provided below. 
 
-### Supplementary Figure 1
+A function for shared legend in multi panel plots copied from [here](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
 ```{r}
-#res_categories <- read.table()
-#ggplot()
+grid_arrange_shared_legend <- function(..., ncol = length(list(...)), nrow = 1, position = c("bottom", "right")) {
+  require(gridExtra)
+  require(grid)
+  plots <- list(...)
+  position <- match.arg(position)
+  g <- ggplotGrob(plots[[1]] + theme(legend.position = position))$grobs
+  legend <- g[[which(sapply(g, function(x) x$name) == "guide-box")]]
+  lheight <- sum(legend$height)
+  lwidth <- sum(legend$width)
+  gl <- lapply(plots, function(x) x + theme(legend.position="none"))
+  gl <- c(gl, ncol = ncol, nrow = nrow)
+
+  combined <- switch(position,
+                     "bottom" = arrangeGrob(do.call(arrangeGrob, gl),
+                                            legend,
+                                            ncol = 1,
+                                            heights = unit.c(unit(1, "npc") - lheight, lheight)),
+                     "right" = arrangeGrob(do.call(arrangeGrob, gl),
+                                           legend,
+                                           ncol = 2,
+                                           widths = unit.c(unit(1, "npc") - lwidth, lwidth)))
+  grid.newpage()
+  grid.draw(combined)
+  # return gtable invisibly
+  invisible(combined)
+}
+```
+
+### Supplementary Figure 1
+The ARG categories are based on the ResFinder annotations.
+```{r, fig.width=12, fig.height=10}
+crass_categ <- read.table("data/crAss_categ.txt")
+
+# Tetracycline
+p1 <- ggplot(crass_categ, aes(rel_crAss, rel_tet, color=country)) + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Tetracycline", shape="crAssphage detection") + theme_classic()
+
+# Aminoglycoside
+p2 <- ggplot(crass_categ, aes(rel_crAss, rel_amino, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Aminoglycoside", shape="crAssphage detection") + theme_classic()
+
+# MLSB
+p3 <- ggplot(crass_categ, aes(rel_crAss, rel_mls, color=country)) + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="MLSB", shape="crAssphage detection") + theme_classic()
+
+# Beta_lactam
+p4 <- ggplot(crass_categ, aes(rel_crAss, rel_beta, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Beta-lactam", shape="crAssphage detection") + theme_classic()
+
+# Trimethoprim
+p5 <- ggplot(crass_categ, aes(rel_crAss, rel_tri, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Trimethoprim", shape="crAssphage detection") + theme_classic()
+
+# Sulphonamide
+p6 <- ggplot(crass_categ, aes(rel_crAss, rel_sul, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Sulphonamide", shape="crAssphage detection") + theme_classic()
+
+ # Vancomycin
+p7 <- ggplot(crass_categ, aes(rel_crAss, rel_van, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Vancomycin", shape="crAssphage detection") + theme_classic()
+
+# Chloramphenicol
+p8 <- ggplot(crass_categ, aes(rel_crAss, rel_clo, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Chloramphenicol", shape="crAssphage detection") + theme_classic()
+
+# Quinolone
+p9 <- ggplot(crass_categ, aes(rel_crAss, rel_qui, color=country))  + geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + scale_x_log10() + scale_y_log10() +
+      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", title="Quinolone", shape="crAssphage detection") + theme_classic()
+
+grid_arrange_shared_legend(p1, p2, p3, p4, p5, p6, p7, p8, p9, ncol=3, nrow=3)
 ```
 
 ### Supplementary Figure 2
@@ -300,7 +367,7 @@ p4 <- ggplot(crass_impact, aes(x=rel_crAss, y=rel_int, color=country)) +
   labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
        color="Study", shape="crAssphage detection")
 
-grid.arrange(p1, p2, p3, p4, ncol=2)
+grid_arrange_shared_legend(p1, p2, p3, p4, ncol=2, nrow=2)
 ```
 
 ### Supplementary Figure 3
@@ -344,23 +411,50 @@ ggplot(pos_crass, aes(x=predicted, y=res, color=pos_crass$revised_source)) +
 ```
 
 ### Supplementary Figure 6
-```{r, fig.width=12}
-p1 <-  ggplot(us_wwtp, aes(rel_crAss, rel_res, shape=geo_loc_name)) + geom_smooth(method="lm") + geom_point(aes(color=Sample_loc), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + theme_classic() +
-      guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+More detailed annotations for the WWTPs taken from the original publications. Note the slightly different samples annotations between US and SWE due to differences in the processes. Also the SWE WWTP sample annotations have been modified. 
 
-p2 <- ggplot(swe_wwtp, aes(rel_crAss, rel_res, shape=WWTP)) + geom_smooth(method="lm") + geom_point(aes(color=Sample), size=5) + scale_x_log10() + scale_y_log10() +
-      labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + theme_classic() +
-      guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+Original annotation | Modified annotation
+-------------------- | ------------------
+Primary/Surplus | Primary sludge
+Primary | Primary sludge
+Surplus | Sludge
+Digested | Digested sludge
+Inlet - ... | Raw Sewage
+Treated | Treated sewage
+Sand-filtered | Sand-filtered treated sewage
+
+
+```{r, fig.width=12}
+us_wwtp <- read.table("data/us_wwtp.txt")
+swe_wwtp <- read.table("data/swe_wwtp.txt")
+
+p1 <-  ggplot(us_wwtp, aes(rel_crAss, rel_res, shape=geo_loc_name)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(color=Sample_loc), size=5) + 
+  scale_x_log10() + scale_y_log10() +
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + 
+  theme_classic() +
+  guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
+
+p2 <- ggplot(swe_wwtp, aes(rel_crAss, rel_res, shape=WWTP)) + 
+  geom_smooth(method="lm") + 
+  geom_point(aes(color=Sample), size=5) + 
+  scale_x_log10() + scale_y_log10() + 
+  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + 
+  theme_classic() + 
+  guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
 
 grid.arrange(p1, p2, ncol=2)
 ```
 
 ### Supplementary Figure 7
 ```{r, fig.width=10, warning=FALSE}
-p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(crAss_norm),color=Sample )) + geom_point() + theme_classic() 
-p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(res_norm),color=Sample )) + geom_point() + theme_classic() 
-grid.arrange(p1,p2, ncol=2)
+# The ARG data on the dairy lagoon still missing.
+p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(crAss_norm),color=Sample )) + geom_point(size=5) + 
+  theme_classic() 
+p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(res_norm),color=Sample )) + geom_point(size=5) + 
+  theme_classic() 
+grid_arrange_shared_legend(p1,p2, ncol=2)
 ```
 
 # References
