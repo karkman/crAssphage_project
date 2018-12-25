@@ -473,7 +473,8 @@ The supplementary figures are not described in detail. Only the data and codes a
 A function for shared legend in multi panel plots copied from [here](https://github.com/tidyverse/ggplot2/wiki/Share-a-legend-between-two-ggplot2-graphs).
 
 ``` r
-grid_arrange_shared_legend <- function(..., ncol = length(list(...)), nrow = 1, position = c("bottom", "right")) {
+grid_arrange_shared_legend <- function(..., ncol = length(list(...)), nrow = 1, 
+                                       position = c("bottom", "right")) {
   require(gridExtra)
   require(grid)
   plots <- list(...)
