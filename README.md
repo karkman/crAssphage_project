@@ -25,8 +25,6 @@ crAssphage project
         -   [Supplementary Figure 7](#supplementary-figure-7)
 -   [References](#references)
 
-**The document is still under construction...**
-
 Background
 ==========
 
@@ -326,7 +324,7 @@ ggplot(MG_RAST_crass, aes(x=rel_crAss, y=rel_res, color=revised_source)) +
 Predicting antibiotic resistance gene abundance with crAssphage
 ---------------------------------------------------------------
 
-The results from the impacted environemnts were used to build a regression model and that model was used to predict the ARG abundance using the crAssphage abundance.
+The results from the impacted environemnts were used to build a regression model and that model was used to predict the ARG abundance using the crAssphage abundance. For the figure, see under [Supplementary figures.](#supplementary-figures)
 
 ``` r
 crass_df <- data.frame(crass=log10(crass_impact$rel_crAss), res=log10(crass_impact$rel_res))
@@ -513,7 +511,7 @@ p1 <- ggplot(crass_categ, aes(rel_crAss, rel_tet, color=country)) +
   geom_smooth(method="lm") + 
   geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
        title="Tetracycline", shape="crAssphage detection") + 
   theme_classic()
 
@@ -522,7 +520,7 @@ p2 <- ggplot(crass_categ, aes(rel_crAss, rel_amino, color=country))  +
   geom_smooth(method="lm") + 
   geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+ labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
        title="Aminoglycoside", shape="crAssphage detection") + 
   theme_classic()
 
@@ -530,7 +528,7 @@ p2 <- ggplot(crass_categ, aes(rel_crAss, rel_amino, color=country))  +
 p3 <- ggplot(crass_categ, aes(rel_crAss, rel_mls, color=country)) + 
   geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+ labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
            title="MLSB", shape="crAssphage detection") + 
   theme_classic()
 
@@ -538,7 +536,7 @@ p3 <- ggplot(crass_categ, aes(rel_crAss, rel_mls, color=country)) +
 p4 <- ggplot(crass_categ, aes(rel_crAss, rel_beta, color=country))  + 
   geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
            title="Beta-lactam", shape="crAssphage detection") + 
   theme_classic()
 
@@ -546,7 +544,7 @@ p4 <- ggplot(crass_categ, aes(rel_crAss, rel_beta, color=country))  +
 p5 <- ggplot(crass_categ, aes(rel_crAss, rel_tri, color=country))  + 
   geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
            title="Trimethoprim", shape="crAssphage detection") + 
   theme_classic()
 
@@ -554,7 +552,7 @@ p5 <- ggplot(crass_categ, aes(rel_crAss, rel_tri, color=country))  +
 p6 <- ggplot(crass_categ, aes(rel_crAss, rel_sul, color=country))  + 
   geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
            title="Sulphonamide", shape="crAssphage detection") + 
   theme_classic()
 
@@ -562,7 +560,7 @@ p6 <- ggplot(crass_categ, aes(rel_crAss, rel_sul, color=country))  +
 p7 <- ggplot(crass_categ, aes(rel_crAss, rel_van, color=country))  + 
   geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
            title="Vancomycin", shape="crAssphage detection") + 
   theme_classic()
 
@@ -570,7 +568,7 @@ p7 <- ggplot(crass_categ, aes(rel_crAss, rel_van, color=country))  +
 p8 <- ggplot(crass_categ, aes(rel_crAss, rel_clo, color=country))  + 
   geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
            title="Chloramphenicol", shape="crAssphage detection") + 
   theme_classic()
 
@@ -578,7 +576,7 @@ p8 <- ggplot(crass_categ, aes(rel_crAss, rel_clo, color=country))  +
 p9 <- ggplot(crass_categ, aes(rel_crAss, rel_qui, color=country))  +
   geom_smooth(method="lm") + geom_point(aes(shape=crAss_detection), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)", 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
            title="Quinolone", shape="crAssphage detection") + 
   theme_classic()
 
@@ -706,7 +704,7 @@ p1 <-  ggplot(us_wwtp, aes(rel_crAss, rel_res, shape=geo_loc_name)) +
   geom_smooth(method="lm") + 
   geom_point(aes(color=Sample_loc), size=5) + 
   scale_x_log10() + scale_y_log10() +
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance") + 
   theme_classic() +
   guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
 
@@ -714,7 +712,7 @@ p2 <- ggplot(swe_wwtp, aes(rel_crAss, rel_res, shape=WWTP)) +
   geom_smooth(method="lm") + 
   geom_point(aes(color=Sample), size=5) + 
   scale_x_log10() + scale_y_log10() + 
-  labs(y = "Normalized ARG abundance (log10)", x="Normalized crAssphage abundance (log10)") + 
+  labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance") + 
   theme_classic() + 
   guides(shape=guide_legend(title="WWTP"), color=guide_legend(title="Sample"))
 
