@@ -416,22 +416,22 @@ The results show that due to the one outlier (hospital effluent) with higher ARG
 The regression model between the ARG abundance and resistance risk is significant revealing the main driver behind the resistasnce risk calculations. With the resistance risk approach the hospital effluent, a possible hotspot for ARGs, would not have been spotted. For the figures, see under [Supplementary figures.](#supplementary-figures)
 
 ``` r
-risk_mod_crAss <- lm(ResRisk~log10(crAss_norm), data=res_risk)
+risk_mod_crAss <- lm(ResRisk~log10(rel_crAss), data=res_risk)
 summary(risk_mod_crAss)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = ResRisk ~ log10(crAss_norm), data = res_risk)
+    ## lm(formula = ResRisk ~ log10(rel_crAss), data = res_risk)
     ## 
     ## Residuals:
     ##      Min       1Q   Median       3Q      Max 
     ## -10.2531  -4.0653  -0.8415   5.7602  13.5574 
     ## 
     ## Coefficients:
-    ##                   Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)         33.130      2.753  12.034 6.24e-06 ***
-    ## log10(crAss_norm)    4.729      2.851   1.659    0.141    
+    ##                  Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)        34.553      3.046  11.345 9.26e-06 ***
+    ## log10(rel_crAss)    4.729      2.851   1.659    0.141    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -441,29 +441,28 @@ summary(risk_mod_crAss)
     ## F-statistic: 2.752 on 1 and 7 DF,  p-value: 0.1411
 
 ``` r
-risk_mod_res <- lm(ResRisk~log10(res_norm), data=res_risk)
+risk_mod_res <- lm(ResRisk~log10(rel_res), data=res_risk)
 summary(risk_mod_res)
 ```
 
     ## 
     ## Call:
-    ## lm(formula = ResRisk ~ log10(res_norm), data = res_risk)
+    ## lm(formula = ResRisk ~ log10(rel_res), data = res_risk)
     ## 
     ## Residuals:
-    ##    Min     1Q Median     3Q    Max 
-    ## -5.002 -2.983 -1.173  3.959  4.364 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -5.5922 -2.6137 -0.5924  3.5710  5.0694 
     ## 
     ## Coefficients:
-    ##                 Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)       -7.422      7.545  -0.984  0.35799   
-    ## log10(res_norm)   10.155      1.899   5.346  0.00107 **
+    ##                Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)      -5.087      5.375  -0.946    0.363    
+    ## log10(rel_res)   10.163      1.537   6.613 2.49e-05 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 4.233 on 7 degrees of freedom
-    ##   (5 observations deleted due to missingness)
-    ## Multiple R-squared:  0.8033, Adjusted R-squared:  0.7752 
-    ## F-statistic: 28.58 on 1 and 7 DF,  p-value: 0.001069
+    ## Residual standard error: 3.802 on 12 degrees of freedom
+    ## Multiple R-squared:  0.7847, Adjusted R-squared:  0.7667 
+    ## F-statistic: 43.73 on 1 and 12 DF,  p-value: 2.492e-05
 
 Supplementary figures
 ---------------------
@@ -646,7 +645,7 @@ The most abundant ARGs were removed due to possible bias introduced by the whole
 | *qnrVC*  | QnrVC4\_1\_GQ891757                                      |
 
 ``` r
-crass_reduced <- read.table()
+crass_reduced <- read.table("data/crass_reduced.txt")
 ggplot(crass_reduced, aes(x=rel_crAss, y=rel_res, color=country)) + 
   geom_smooth(method="lm") + 
   geom_point(aes(shape=crAss_detection), size=5) + 
@@ -654,8 +653,10 @@ ggplot(crass_reduced, aes(x=rel_crAss, y=rel_res, color=country)) +
   scale_y_log10() + 
   theme_classic() +
   labs(y = "Normalized ARG abundance", x="Normalized crAssphage abundance", 
-       color="Study", shape="crAssphage detection") + scale_colour_manual(values=cols)
+       color="Study", shape="crAssphage detection")
 ```
+
+![](README_files/figure-markdown_github/unnamed-chunk-20-1.jpeg)
 
 ### Supplementary Figure 4
 
@@ -725,10 +726,9 @@ grid.arrange(p1, p2, ncol=2)
 ### Supplementary Figure 7
 
 ``` r
-# The ARG data on the dairy lagoon still missing.
-p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(crAss_norm),color=Sample )) + geom_point(size=5) + 
+p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(rel_res),color=Environment)) + geom_point(size=5) + 
   theme_classic() 
-p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(res_norm),color=Sample )) + geom_point(size=5) + 
+p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(rel_crAss),color=Environment)) + geom_point(size=5) + 
   theme_classic() 
 grid_arrange_shared_legend(p1,p2, ncol=2)
 ```
