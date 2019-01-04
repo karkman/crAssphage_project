@@ -490,9 +490,13 @@ grid.arrange(p1, p2, ncol=2)
 
 ### Supplementary Figure 7
 ```{r, fig.width=8, warning=FALSE}
-p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(rel_res),color=Environment)) + geom_point(size=5) + 
+p1 <- ggplot(res_risk,aes(y=ResRisk,x=log10(rel_res),color=Environment)) + 
+  geom_point(size=5) + 
+  labs(y = "Resistance risk", x="Normalized ARG abundance") +
   theme_classic() 
-p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(rel_crAss),color=Environment)) + geom_point(size=5) + 
+p2 <- ggplot(res_risk,aes(y=ResRisk,x=log10(rel_crAss),color=Environment)) + 
+  geom_point(size=5) + 
+  labs(y = "Resistance risk", x="Normalized crAssphage abundance") +
   theme_classic() 
 grid_arrange_shared_legend(p1,p2, ncol=2)
 ```
