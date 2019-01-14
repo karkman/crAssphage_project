@@ -13,7 +13,7 @@ bibliography: crAssphage.bib
 # Background
 Supplementary data analysis for the paper:
 
-_**Karkman, A., Pärnänen, K., Larsson, DGJ.**_ 2018. Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments. _Nature Communications_ **10**:80. DOI: [10.1038/s41467-018-07992-3](https://doi.org/10.1038/s41467-018-07992-3)
+_**Karkman, A., Pärnänen, K., Larsson, DGJ.**_ 2019. Fecal pollution explains antibiotic resistance gene abundances in anthropogenically impacted environments. _Nature Communications_ **10**:80. DOI: [10.1038/s41467-018-07992-3](https://doi.org/10.1038/s41467-018-07992-3)
 
 ## Introduction
 Discharge of treated sewage introduces antibiotic resistance genes (ARGs) and resistant bacteria (ARBs) to the environment [@karkman_antibiotic-resistance_2018]. It has been speculated that the resistance determinants could be selected and/or disseminated to other bacteria in the downstream environments due to the antibiotcs and other selective agents released in the effluents [@rizzo_urban_2013; @guo_metagenomic_2017]. However, the increased abundance of ARGs in downstream environments could as well be explained by the amount of fecal pollution without any large scale selection and/or dissemination of the genes.  
